@@ -8,5 +8,5 @@ translate:fn(ewords) {
   return cwords
 }
 
-c = translate(['a', 'dog', 'chase', 'a', 'cat'])
+c = translate(['a' 'dog' 'chase' 'a' 'cat'])
 print(c)

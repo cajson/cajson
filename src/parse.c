@@ -6,7 +6,7 @@ node_t *args() {
     skip('(');
     while (tk.type != ')') {
         expr();
-        if (tk.type != ')') skip(',');
+        // if (tk.type != ')') skip(',');
     }
     skip(')');
 }
@@ -16,7 +16,7 @@ node_t *array() {
     skip('[');
     while (tk.type != ']') {
         expr();
-        if (tk.type != ']') skip(',');
+        // if (tk.type != ']') skip(',');
     }
     skip(']');
 }
@@ -47,7 +47,7 @@ node_t *item() {
         skip('(');
         while (tk.type != ')') { 
             skip(Id);
-            if (tk.type != ')') skip(',');
+            // if (tk.type != ')') skip(',');
         }
         skip(')');
         block();
