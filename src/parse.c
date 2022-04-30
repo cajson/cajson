@@ -1,22 +1,20 @@
 node_t *expr();
 node_t *block();
 
-// args = (expr (,expr)*)
+// args = (expr*)
 node_t *args() {
     skip('(');
     while (tk.type != ')') {
         expr();
-        // if (tk.type != ')') skip(',');
     }
     skip(')');
 }
 
-// array = [ expr (,expr)* ]
+// array = [ expr* ]
 node_t *array() {
     skip('[');
     while (tk.type != ']') {
         expr();
-        // if (tk.type != ']') skip(',');
     }
     skip(']');
 }
@@ -42,12 +40,11 @@ node_t *term() {
 node_t *item() {
     if (tk.type == Num || tk.type == Str) { // Num | Str  // n = node(tk.type); n->sym = tk.sym;
         next();
-    } else if (match("fn")) { // fn (id {,id}*) block
+    } else if (match("fn")) { // fn (id*) block
         next();
         skip('(');
         while (tk.type != ')') { 
             skip(Id);
-            // if (tk.type != ')') skip(',');
         }
         skip(')');
         block();
@@ -72,7 +69,11 @@ node_t *expr() {
     }
 }
 
-// stmt = WHILE | IF | FOR | RETURN | (id=)? EXP
+// stmt = while expr block          | 
+//        if expr stmt (else stmt)? |
+//        for id in expr stmt       | 
+//        return exp                |
+//        (id=)? expr
 node_t *stmt() {
     if (match("while")) { // while expr stmt
         next();
