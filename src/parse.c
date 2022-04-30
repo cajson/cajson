@@ -36,16 +36,25 @@ node_t *term() {
     }
 }
 
+// params = (id(=expr)?)*
+node_t *params() {
+    while (tk.type != ')') { 
+        skip(Id);
+        if (tk.type == '=') {
+            skip('=');
+            expr();
+        }
+    }
+}
+
 // item = Num | Str | fn | array | block | ( expr ) | term
 node_t *item() {
     if (tk.type == Num || tk.type == Str) { // Num | Str  // n = node(tk.type); n->sym = tk.sym;
         next();
-    } else if (match("fn")) { // fn (id*) block
+    } else if (match("fn")) { // fn (params) block
         next();
         skip('(');
-        while (tk.type != ')') { 
-            skip(Id);
-        }
+        params();
         skip(')');
         block();
     } else if (tk.type == '[') { // array

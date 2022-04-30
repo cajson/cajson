@@ -8,7 +8,7 @@ typedef struct token_t {
 
 token_t tk;   // current token (目前 token)
 
-#define perror() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, p-lp, __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
+#define cjerror() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, p-lp, __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
 
 void scan() { // 詞彙解析 lexer
   tk.type = End;
@@ -81,8 +81,8 @@ token_t next() {
   return r;
 }
 
-#define skip(t) ({token_t r=tk; if (tk.type==t) next(); else perror(); r; })
-#define sskip(str) ({token_t r=tk; if (match(str)) next(); else perror(); r; })
+#define skip(t) ({token_t r=tk; if (tk.type==t) next(); else cjerror(); r; })
+#define sskip(str) ({token_t r=tk; if (match(str)) next(); else cjerror(); r; })
 
 token_t tk0; char *p0;
 void scan_save() { tk0 = tk; p0=p; }

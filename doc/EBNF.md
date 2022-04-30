@@ -13,11 +13,17 @@ stmt = while expr block          |
 
 expr = item (op2 expr)*
 
-item = Num | Str | fn | array | block | ( expr ) | term
+item = Number | String | function | array | block | ( expr ) | term
 
-term =  Name ([expr] | . Name | args )*
+function = fn (params) block
 
 array = [ expr* ]
 
 args  = ( expr* )
+
+term =  Name ( [expr] | . Name | args )*
+
+Number : Integer | Float
+String : '...'
+Name   : Alphabet Sequence 
 ```
