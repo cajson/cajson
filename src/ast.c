@@ -1,5 +1,5 @@
 typedef struct node_t {
-  char type;
+  int type;
   union {
     struct node_t *node;
     sym_t *sym;

@@ -17,6 +17,8 @@ item = Number | String | function | array | block | ( expr ) | term
 
 function = fn (params) block
 
+params = (id(=expr)?)*
+
 array = [ expr* ]
 
 args  = ( expr* )

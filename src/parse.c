@@ -94,7 +94,7 @@ node_t *stmt() {
     } else if (match("for")) { // for id in expr stmt
         next();
         skip(Id);
-        sskip("in");
+        skip_str("in");
         expr();
         stmt();
     } else if (match("return")) { // return exp
