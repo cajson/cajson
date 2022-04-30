@@ -15,14 +15,14 @@ char target[NMAX], *e=target, *le=target;
 
 // token 的 id 與 vm 的 op 共用列舉編碼
 enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
-  None=0,
+  Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
+  AsciiEnd=128, 
   Id, Num, Str, Fn, Sys, 
   If, Else, Return, While,
   Block, Stmts, 
   Op1, Inc, Dec, Op1End,  // 一元運算
   Op2, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End, // 二元運算 
-  AsciiBegin=32,
-  Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%'
+  End
 };
 
 char *op_names[] = {
@@ -34,16 +34,16 @@ char *op_names[] = {
 };
 
 char* op_name(int op, char *name) {
-  if (op > AsciiBegin)
+  if (op <= AsciiEnd)
     sprintf(name, "%c", (char) op);
-  else if (op >= 0)
+  else if (op <= End)
     sprintf(name, "%s", op_names[op]);
   else
     error("op_name(%d) out of range...", op);
   return name;
 }
 
-bool is_op2(char op) {
+bool is_op2(int op) {
   return strchr("+-*/%&|^", op) || (op >= Op2 && op <=Op2End);
 }
 

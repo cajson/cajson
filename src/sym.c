@@ -7,9 +7,9 @@ typedef struct sym_t {
 #define NSYM 9997
 sym_t symtb[NSYM];
 
-int hash(char *name, int len) { // 計算雜湊值
+unsigned int hash(char *name, int len) { // 計算雜湊值
     char *p = name;
-    int h=1;
+    unsigned int h=1;
     while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_')
         h = h * 147 + *p++;
     h = (h << 6) + len;
@@ -28,7 +28,8 @@ sym_t *sym_find(char *name, int len, bool *found) {
         if (len == sym->len && memcmp(sym->name, name, len)==0) { 
             *found=true; return sym;
         }
-        if (++i == si) { *found=false; return NULL; }
+        i=(i+1)%NSYM;
+        if (i == si) { *found=false; return NULL; }
     }
 }
 

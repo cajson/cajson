@@ -17,12 +17,14 @@ int nodeTop = 0;
 node_t *node(char type) {
     node_t *n = &nodes[nodeTop++];
     n->type = type;
-    n->next = NULL;
+    n->node = NULL;
+    n->node2 = NULL;
 }
 
 node_t *op1(char op, node_t *n1) {
     node_t *n = node(op);
     n->node = n1;
+    n->node2 = NULL;
     return n;
 }
 

@@ -1,2 +1,2 @@
-name='ccc';
-print('hello', name);
+name='ccc'
+print('hello', name)

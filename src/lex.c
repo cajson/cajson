@@ -1,5 +1,6 @@
 typedef struct token_t {
-    char type;
+    int type;   // token 型態
+    int line;   // 所在行號
     char *str;  // token 的字串
     int len;    // token 的字串長度
     sym_t *sym; // 指向 symbol
@@ -7,10 +8,13 @@ typedef struct token_t {
 
 token_t tk;   // current token (目前 token)
 
-void next() { // 詞彙解析 lexer
-  tk.type = None;
+#define perror() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, p-lp, __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
+
+void scan() { // 詞彙解析 lexer
+  tk.type = End;
   while (*p) {
     tk.str = p;
+    tk.line = line;
     char ch = *p++;
     if (ch == '\n') { // 換行
       if (src) {
@@ -66,11 +70,32 @@ void next() { // 詞彙解析 lexer
   tk.len = p-tk.str;
 }
 
+bool match(char *str) {
+    int len = strlen(str);
+    return len == tk.len && memcmp(str, tk.str, len)==0;
+}
+
+token_t next() {
+  token_t r=tk; 
+  scan();
+  return r;
+}
+
+#define skip(t) ({token_t r=tk; if (tk.type==t) next(); else perror(); r; })
+#define sskip(str) ({token_t r=tk; if (match(str)) next(); else perror(); r; })
+
+token_t tk0; char *p0;
+void scan_save() { tk0 = tk; p0=p; }
+void scan_restore() { tk = tk0; p=p0; }
+
 int lex(char *source) {
     p = source;
+    src = 1;
+    next();
     while (true) {
-        next();
-        if (tk.type == None) break;
-        printf("%2d:%d %.*s\n", tk, tk.len, tk.len, tk.str);
+        token_t t = next();
+        if (t.type == End) break;
+        printf("%d: %.*s\n", t.line, t.len, t.str);
     }
 }
+

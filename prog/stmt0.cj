@@ -1,3 +1,3 @@
-x = 'hello';
-y = 'world';
-z = x+' '+y;
+x = 'hello'
+y = 'world'
+z = x+' '+y
