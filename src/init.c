@@ -44,7 +44,7 @@ char* op_name(int op, char *name) {
 }
 
 bool is_op2(int op) {
-  return strchr("+-*/%&|^", op) || (op >= Op2 && op <=Op2End);
+  return strchr("+-*/%&|^<>", op) || (op > Op2 && op <Op2End);
 }
 
 void init() {

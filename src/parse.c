@@ -1,7 +1,7 @@
 node_t *expr();
 node_t *block();
 
-// args = (expr {,expr}*)
+// args = (expr (,expr)*)
 node_t *args() {
     skip('(');
     while (tk.type != ')') {
@@ -11,6 +11,7 @@ node_t *args() {
     skip(')');
 }
 
+// array = [ expr (,expr)* ]
 node_t *array() {
     skip('[');
     while (tk.type != ']') {
@@ -71,7 +72,7 @@ node_t *expr() {
     }
 }
 
-// stmt = WHILE | IF | RETURN | (id=)? EXP
+// stmt = WHILE | IF | FOR | RETURN | (id=)? EXP
 node_t *stmt() {
     if (match("while")) { // while expr stmt
         next();
@@ -80,6 +81,12 @@ node_t *stmt() {
     } else if (match("if")) { // if expr stmt (else stmt)?
         next();
         expr();
+    } else if (match("for")) { // for id in expr stmt
+        next();
+        skip(Id);
+        sskip("in");
+        expr();
+        stmt();
     } else if (match("return")) { // return exp
         next();
         expr();

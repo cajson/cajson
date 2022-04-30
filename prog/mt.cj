@@ -1,8 +1,8 @@
-e2c:{dog:'狗', cat:'貓', a:'一隻', the:'這隻', chase:'追', bite:'咬'}
+e2c:{dog:'gou' cat:'mou' a:'one' the:'this' chase:'go' bite:'eat'}
 
 translate:fn(ewords) {
   cwords = []
-  for (e in ewords) {
+  for e in ewords {
     cwords.push(e2c[e])
   }
   return cwords
