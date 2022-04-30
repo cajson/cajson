@@ -1,6 +1,6 @@
 # Cajson
 
-Cajson is a programming inspired by C and JavaScript. 
+Cajson is a programming language inspired by C and JavaScript. 
 
 Programming language can be devided into strong typed and weak typed.
 
