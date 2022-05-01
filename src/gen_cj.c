@@ -123,7 +123,7 @@ void gen_code(node_t *me) {
         emit("%c", type);
         gen_code(a[1]);
         emit(")");
-    } else if (type=='=') {
+    } else if (type=='=' || type == ':') {
         a = me->array->nodes;
         gen_code(a[0]);
         emit("=");
