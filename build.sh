@@ -1,1 +1,1 @@
-make genjs_test
+make gencj

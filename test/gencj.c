@@ -3,7 +3,7 @@
 #include <lex.c>
 #include <ast.c>
 #include <parse.c>
-#include <gen_js.c>
+#include <gen_cj.c>
 
 int main(int argc, char **argv) {
     read_source(argv[1]);

@@ -18,10 +18,11 @@ typedef enum op_t { // token : 0-127 直接用該字母表達， 128 以後用�
   Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
   Id=130, Num, Str, Fn, Sys, 
-  If=140, Return, While, For, 
-  Stmts=150, Block, Expr, Function, Params, Array, Args, Term,
-  Op1=160, Inc, Dec, Op1End,  // 一元運算
-  Op2=170, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End, // 二元運算 
+  If=140, Return, While, For, Function, 
+  Stmts=150, Block, Array, Expr,
+  Params=160, Args, Term,
+  Op1=170, Inc, Dec, Op1End,  // 一元運算
+  Op2=180, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End, // 二元運算 
   End
 } op_t;
 
