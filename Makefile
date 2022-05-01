@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -I ./src
-OBJS = obj_test lex_test parse_test
+OBJS = obj_test lex_test parse_test genjs_test
 
 all: $(OBJS)
 
@@ -11,6 +11,9 @@ lex_test: test/lex_test.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 parse_test: test/parse_test.c
+	$(CC) $(CFLAGS) $^ -o $@
+
+genjs_test: test/genjs_test.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 cj: src/cj.c

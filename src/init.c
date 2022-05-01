@@ -14,16 +14,16 @@ char target[NMAX], *e=target, *le=target;
 #define emit(...) { printf(__VA_ARGS__); sprintf(e, __VA_ARGS__); e+=strlen(e); }
 
 // token 的 id 與 vm 的 op 共用列舉編碼
-enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
+typedef enum op_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
   Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
-  Id, Num, Str, Fn, Sys, 
-  If, Else, Return, While,
-  Block, Stmts, 
-  Op1, Inc, Dec, Op1End,  // 一元運算
-  Op2, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End, // 二元運算 
+  Id=130, Num, Str, Fn, Sys, 
+  If=140, Return, While, For, 
+  Stmts=150, Block, Expr, Function, Params, Array, Args, Term,
+  Op1=160, Inc, Dec, Op1End,  // 一元運算
+  Op2=170, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End, // 二元運算 
   End
-};
+} op_t;
 
 char *op_names[] = {
   "none", 

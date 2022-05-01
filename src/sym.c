@@ -1,7 +1,7 @@
 typedef struct sym_t {
     char *name;
     int len;
-    Obj *obj;
+    // Obj *obj;
 } sym_t;
 
 #define NSYM 9997

@@ -1,81 +1,123 @@
 node_t *expr();
 node_t *block();
 
+node_t *base(int type) {
+    token_t t = skip(type);
+    node_t *r = node(type);
+    r->sym = t.sym;
+    return r;
+}
+
+node_t *id() {
+    return base(Id);
+}
+
+node_t *str() {
+    return base(Str);
+}
+
+node_t *num() {
+    return base(Num);
+}
+
+node_t *exp_list(int type, char lpair, char rpair) {
+    node_t *r = node(type);
+    r->list = list();
+    skip(lpair);
+    while (tk.type != rpair) {
+        list_add(r->list, expr());
+    }
+    skip(rpair);
+    list_reverse(r->list);
+    return r;
+}
+
 // args = (expr*)
 node_t *args() {
-    skip('(');
-    while (tk.type != ')') {
-        expr();
-    }
-    skip(')');
+    return exp_list(Args, '(', ')');
 }
 
 // array = [ expr* ]
 node_t *array() {
-    skip('[');
-    while (tk.type != ']') {
-        expr();
-    }
-    skip(']');
+    return exp_list(Array, '[', ']');
 }
 
-// term =  Name ([expr] | . Name | args )*
+// term =  id ([expr] | . id | args )*
 node_t *term() {
-    skip(Id);
+    node_t *r = node(Term);
+    node_t *nid = id(), *t = nid;
+    r->list = list();
+    list_add(r->list, nid);
     while (strchr("[.(", tk.type)) {
         if (tk.type == '[') { // array member
             next();
-            expr();
+            node_t *e=expr();
             skip(']');
+            list_add(r->list, op1('[', e));
         } else if (tk.type == '.') { // object member
             next();
-            skip(Id);
+            node_t *mid = id();
+            list_add(r->list, op1('.', mid));
         } else if (tk.type == '(') { // function call
-            args('(', ')');
+            list_add(r->list, args('(', ')'));
         }
     }
+    list_reverse(r->list);
+    return r;
 }
 
 // params = (id(=expr)?)*
 node_t *params() {
+    node_t *r = node(Params);
+    r->list = list();
     while (tk.type != ')') { 
-        skip(Id);
+        node_t *nid = id();
+        node_t *e = NULL;
         if (tk.type == '=') {
             skip('=');
-            expr();
+            e = expr();
         }
+        list_add(r->list, op2('=', nid, e));
     }
+    list_reverse(r->list);
+    return r;
 }
 
 // item = Num | Str | fn | array | block | ( expr ) | term
 node_t *item() {
-    if (tk.type == Num || tk.type == Str) { // Num | Str  // n = node(tk.type); n->sym = tk.sym;
-        next();
+    if (tk.type == Num) {
+        return num();
+    } else if (tk.type == Str) {
+        return str();
     } else if (match("fn")) { // fn (params) block
         next();
         skip('(');
-        params();
+        node_t *p1 = params();
         skip(')');
-        block();
+        node_t *b1 = block(); 
+        return op2(Fn, p1, b1);
     } else if (tk.type == '[') { // array
-        array();
+        return array();
     } else if (tk.type == '{') { // block
-        block();
+        return block();
     } else if (tk.type == '(') { // ( expr )
         skip('(');
-        expr();
+        node_t *e = expr();
         skip(')');
+        return e;
     } else {
-        term();
+        return term();
     }
 }
 // expr = item (op2 expr)*
 node_t *expr() {
-    item();
+    node_t *r = item();
     while (is_op2(tk.type)) {
-        next();
-        expr();
+        token_t op = next();
+        node_t *e = expr();
+        r = op2(op.type, r, e);
     }
+    return r;
 }
 
 // stmt = while expr block          | 
@@ -84,50 +126,70 @@ node_t *expr() {
 //        return exp                |
 //        (id=)? expr
 node_t *stmt() {
+    node_t *cmd, *e, *s;
     if (match("while")) { // while expr stmt
         next();
-        expr();
-        block();
+        e = expr();
+        s = stmt();
+        return op2(While, e, s);
     } else if (match("if")) { // if expr stmt (else stmt)?
         next();
-        expr();
+        e = expr();
+        s = stmt();
+        node_t *s2 = NULL;
+        if (match("else")) {
+            next();
+            s2 = stmt();
+        }
+        return op3(If, e, s, s2);
     } else if (match("for")) { // for id in expr stmt
         next();
-        skip(Id);
+        node_t *nid = id();
         skip_str("in");
-        expr();
-        stmt();
+        e = expr();
+        s = stmt();
+        return op3(For, nid, e, s);
     } else if (match("return")) { // return exp
         next();
-        expr();
+        e = expr();
+        return op1(Return, e);
     } else {
         scan_save();
         if (tk.type == Id) {
-            skip(Id);
+            token_t tid = skip(Id);
             if (tk.type=='=' || tk.type==':') { // (strchr("=:", tk.type)) {
                 next();
-                expr();
-                return NULL;
+                e = expr();
+                // code gen id=exp
+                node_t *nid = node(Id);
+                nid->sym = tid.sym;
+                return op2('=', nid, e);
             } else {
                 scan_restore();
             }
         }
-        expr();
+        return expr();
     }
 }
 
 // stmts = stmt*
 node_t *stmts() {
+    node_t *r = node(Stmts);
+    r->list = list();
     while (tk.type != End && tk.type != '}') {
-        stmt();
+        list_add(r->list, stmt());
     }
+    list_reverse(r->list);
+    return r;
 }
 
 // block = { stmts }
 node_t *block() {
+    node_t *r = node(Block);
     skip('{');
-    stmts();
+    r->node = stmts();
     skip('}');
+    return r;
 }
 
 // program = stmts

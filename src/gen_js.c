@@ -8,26 +8,57 @@ void gen_sym(node_t *node) {
 }
 
 void gen_code(node_t *node) {
+    node_t **a;
     if (node == NULL) return;
-    char type = node->type;
+    int type = node->type;
+    // printf("type=%d\n", node->type);
     if (type == Stmts) {
-        gen_code(node->node);
-        gen_code(node->next);
+        link_t *p = node->list->head;
+        while (p != NULL) {
+            gen_code(p->node);
+            printf("\n");
+            p = p->next;
+        }
     } else if (is_op2(type)) {
+        a = node->array->nodes;
         emit("(");
-        gen_code(node->node);
+        gen_code(a[0]);
         emit("%c", type);
-        gen_code(node->node2);
+        gen_code(a[1]);
         emit(")");
-//    } else if (is_op1(type)) {
-//        emit("%c", type);
-//        gen_code(node->node1);
     } else if (type=='=') {
-        gen_code(node->node);
+        a = node->array->nodes;
+        gen_code(a[0]);
         emit("=");
-        gen_code(node->node2);
+        gen_code(a[1]);
         emit(";\n");
-    } else if (type==Id || type==Num || type==Str) {
+    } else if (type==Term) { // term =  id ([expr] | . id | args )*
+        link_t *p = node->list->head; 
+        node_t *id = p->node;
+        gen_code(id);
+        for (p=p->next; p != NULL; p = p->next) {
+            node_t *n = p->node; int op = n->type; 
+            if (op == '[') {
+                emit("[");
+                gen_code(n->node);
+                emit("]");
+            } else if (op == '.') {
+                emit(".");
+                gen_code(n->node);
+            } else if (op == Args) {
+                emit("(");
+                gen_code(n);
+                emit(")");
+            }
+        }
+    } else if (type==Args) { // args  = ( expr* )
+        for (link_t *p = node->list->head; p != NULL; p = p->next) {
+            gen_code(p->node);
+            emit(" ");
+        }
+    } else if (type==Id) {
+        gen_sym(node);
+    } else if (type==Num || type==Str) {
         gen_sym(node);
     } else {
         error("unknown node->type=%d=%c");
