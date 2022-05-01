@@ -22,9 +22,7 @@ void gen_term(node_t *id, link_t *head) {
             emit(".");
             gen_code(n->node);
         } else if (op == Args) {
-            emit("(");
             gen_code(n);
-            emit(")");
         }
     }
 }
@@ -36,15 +34,28 @@ void gen_while(node_t *exp, node_t *stmt) {
 }
 
 void gen_if(node_t *exp, node_t *stmt1, node_t *stmt2) {
-    
+    emit("if ");
+    gen_code(stmt1);
+    if (stmt2 != NULL) {
+        emit("else ");
+        gen_code(stmt2);
+    }
 }
 
 void gen_for(node_t *id, node_t *exp, node_t *stmt) {
-
+    emit("for ");
+    gen_code(id);
+    emit(" in ");
+    gen_code(exp);
+    gen_code(stmt);
 }
 
 void gen_function(node_t *params, node_t *stmts) {
-
+    emit("fn ");
+    gen_code(params);
+    emit("{");
+    gen_code(stmts);
+    emit("}");
 }
 
 void gen_stmts(node_t *node) {
