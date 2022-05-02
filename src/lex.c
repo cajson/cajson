@@ -43,12 +43,19 @@ void scan() { // 詞彙解析 lexer
     } // 以下為運算元 =+-!<>|&^%*[?~, ++, --, !=, <=, >=, ||, &&, ~  ;{}()],:
     else {
       tk.type = ch;
-      if (ch == '/' && *p == '/') { // 註解
+      if (ch == '/' && *p == '/') { // 註解  //... 
           ++p;
-          while (*p != 0 && *p != '\n') ++p; // 略過註解
+          while (*p != 0 && *p != '\n') ++p;
           tk.type = End; // 這一行必須加，否則檔尾有註解會發生錯誤
-      }
-      else if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
+      } else if (ch == '/' && *p == '*') { // 註解 /*...*/
+          ++p;
+          while (!(*p =='*' && *(p+1) == '/')) {
+            if (*p == '\n') line++;
+            ++p;
+          }
+          p+=2;
+          tk.type = End;
+      } else if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
       else if (ch == '+') { if (*p == '+') { ++p; tk.type = Inc; } break; }
       else if (ch == '-') { if (*p == '-') { ++p; tk.type = Dec; } break; }
       else if (ch == '!') { if (*p == '=') { ++p; tk.type = Neq; } break; }
