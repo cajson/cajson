@@ -7,7 +7,7 @@
 #include <gen_cj.c>
 
 int main(int argc, char **argv) {
-  char *iFile, *oFile, *narg;
+  char *narg;
   int o_save;
   // 主程式
   --argc; ++argv; // 略過執行檔名稱
@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
     }
   }
   read_source(iFile);
+  // lex(source);
   node_t *ast = parse(source);
   gen_cj(ast);
   printf("\n");

@@ -46,6 +46,7 @@ void scan() { // 詞彙解析 lexer
       if (ch == '/' && *p == '/') { // 註解
           ++p;
           while (*p != 0 && *p != '\n') ++p; // 略過註解
+          tk.type = End; // 這一行必須加，否則檔尾有註解會發生錯誤
       }
       else if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
       else if (ch == '+') { if (*p == '+') { ++p; tk.type = Inc; } break; }
@@ -60,6 +61,7 @@ void scan() { // 詞彙解析 lexer
     }
   }
   tk.len = p-tk.str;
+  // printf("tk=%.*s ", tk.len, tk.str);
 }
 
 bool match(char *str) {

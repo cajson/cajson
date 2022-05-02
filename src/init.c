@@ -1,4 +1,5 @@
 #define NMAX 100000
+char *iFile, *oFile; 
 int src, debug, o_run, o_dump;
 int line = 1;
 // char data[NMAX], *datap=data;
@@ -37,6 +38,6 @@ int read_source(char *iFile) {
   }
   int len = fread(source, 1, sizeof(source), fd);
   source[len++] = '\n'; source[len++] = '\0';
-  printf("=====source=======\n%s\n==================\n", source);
+  // printf("=====source=======\n%s\n==================\n", source);
   return 0;
 }

@@ -86,13 +86,13 @@ static void gen_assign(node_t *id, char op, node_t *exp) {
 
 // return expr
 static void gen_return(node_t *exp) {
-    emit("return ");
+    emit(" return ");
     gen_code(exp);
 }
 
 // while expr stmt
 static void gen_while(node_t *exp, node_t *stmt) {
-    emit("while "); gen_code(exp);
+    emit(" while "); gen_code(exp);
     gen_code(stmt);
 }
 
@@ -117,21 +117,14 @@ static void gen_for(node_t *id, node_t *exp, node_t *stmt) {
 
 // function = fn (params) block
 static void gen_function(node_t *params, node_t *block) {
-    emit(" fn "); gen_code(params);
+    emit(" fn"); gen_code(params);
     gen_code(block);
 }
 
-// stmts = stmt*
-// static int eline = 0;
+// stmt
 static void gen_stmt(node_t *stmt) {
-    /*
-    while (eline < stmt->line) {
-        emit("%d:%d:\n", eline, stmt->line);
-        indent();
-        eline ++;
-    }
-    */
     gen_code(stmt->node);
+    if (level == 0) { emit(" // line:%d\n", stmt->line); } else emit(" ");
 }
 
 // stmts = stmt*
@@ -155,5 +148,6 @@ static void gen_block(node_t *block) {
 #include <gen.c>
 
 void gen_cj(node_t *root) {
+    emit("// source file: %s\n", iFile);
     return gen_code(root);
 }
