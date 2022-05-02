@@ -66,18 +66,18 @@ node_t *term() {
     return r;
 }
 
-// params = (id(=expr)?)*
+// params = (id(:expr)?)*
 node_t *params() {
     node_t *r = node(Params);
     r->list = list();
     while (tk.type != ')') { 
         node_t *nid = id();
         node_t *e = NULL;
-        if (tk.type == '=') {
-            skip('=');
+        if (tk.type == ':') {
+            skip(':');
             e = expr();
         }
-        list_add(r->list, op2('=', nid, e));
+        list_add(r->list, op2(Param, nid, e));
     }
     list_reverse(r->list);
     return r;
@@ -94,8 +94,8 @@ node_t *item() {
         skip('(');
         node_t *p1 = params();
         skip(')');
-        node_t *b1 = block(); 
-        return op2(Fn, p1, b1);
+        node_t *b1 = block();
+        return op2(Function, p1, b1);
     } else if (tk.type == '[') { // array
         return array();
     } else if (tk.type == '{') { // block
@@ -109,10 +109,11 @@ node_t *item() {
         return term();
     }
 }
-// expr = item (op2 expr)*
+
+// expr = item (op2 expr)?
 node_t *expr() {
     node_t *r = item();
-    while (is_op2(tk.type)) {
+    if (is_op2(tk.type)) {
         token_t op = next();
         node_t *e = expr();
         r = op2(op.type, r, e);
@@ -126,12 +127,12 @@ node_t *expr() {
 //        return exp                |
 //        (id=)? expr
 node_t *stmt() {
-    node_t *cmd, *e, *s;
+    node_t *e, *s, *r=node(Stmt);
     if (match("while")) { // while expr stmt
         next();
         e = expr();
         s = stmt();
-        return op2(While, e, s);
+        r->node = op2(While, e, s);
     } else if (match("if")) { // if expr stmt (else stmt)?
         next();
         e = expr();
@@ -141,35 +142,39 @@ node_t *stmt() {
             next();
             s2 = stmt();
         }
-        return op3(If, e, s, s2);
+        r->node = op3(If, e, s, s2);
     } else if (match("for")) { // for id in expr stmt
         next();
         node_t *nid = id();
         skip_str("in");
         e = expr();
         s = stmt();
-        return op3(For, nid, e, s);
+        r->node = op3(For, nid, e, s);
     } else if (match("return")) { // return exp
         next();
         e = expr();
-        return op1(Return, e);
+        r->node = op1(Return, e);
     } else {
         scan_save();
+        bool is_exp = true;
         if (tk.type == Id) {
             token_t tid = skip(Id);
             if (tk.type=='=' || tk.type==':') { // (strchr("=:", tk.type)) {
+                char op = tk.type;
                 next();
                 e = expr();
                 // code gen id=exp
                 node_t *nid = node(Id);
                 nid->sym = tid.sym;
-                return op2('=', nid, e);
+                r->node = op2(op, nid, e);
+                is_exp = false;
             } else {
                 scan_restore();
             }
         }
-        return expr();
+        if (is_exp) r->node = expr();
     }
+    return r;
 }
 
 // stmts = stmt*

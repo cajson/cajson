@@ -1,33 +1,3 @@
-typedef struct node_t node_t;
-typedef struct array_t array_t;
-typedef struct link_t link_t;
-typedef struct list_t list_t;
-
-struct node_t {
-  int type;
-  union {
-    list_t  *list;
-    sym_t   *sym;
-    node_t  *node;
-    array_t *array;
-  };
-};
-
-struct array_t {
-  node_t **nodes;
-  int len;
-};
-
-struct link_t {
-  node_t *node;
-  link_t *next;
-};
-
-struct list_t {
-  int len;
-  link_t *head;
-};
-
 #define NPTR 100000
 void *pools[NPTR];
 int poolTop = 0;
@@ -43,6 +13,8 @@ void *pool(int size) {
 node_t *node(int type) {
     node_t *n = pool(sizeof(node_t));
     n->type = type;
+    n->line = line;
+    // printf("line=%d\n", line);
     return n;
 }
 

@@ -3,6 +3,7 @@ sum:fn(n) {
     s=1
     while (i<=n) {
         s=s+i
+        i=i+1
     }
     return s
 }

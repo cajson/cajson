@@ -1,9 +1,3 @@
-typedef struct sym_t {
-    char *name;
-    int len;
-    // Obj *obj;
-} sym_t;
-
 #define NSYM 9997
 sym_t symtb[NSYM];
 

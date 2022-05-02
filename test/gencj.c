@@ -1,8 +1,4 @@
-#include <init.c>
-#include <sym.c>
-#include <lex.c>
-#include <ast.c>
-#include <parse.c>
+#include <cj.h>
 #include <gen_cj.c>
 
 int main(int argc, char **argv) {

@@ -5,10 +5,10 @@ stmts = stmt*
 
 block = { stmts }
 
-stmt = while expr block          | 
+stmt = while expr stmt           | 
        if expr stmt (else stmt)? |
        for id in expr stmt       | 
-       return exp                |
+       return expr               |
        (id=)? expr
 
 expr = item (op2 expr)*
@@ -17,7 +17,9 @@ item = Num | Str | function | array | block | ( expr ) | term
 
 function = fn (params) block
 
-params = (id(=expr)?)*
+params = param*
+
+param = id (:expr)?
 
 array = [ expr* ]
 

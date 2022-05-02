@@ -1,29 +1,21 @@
 CC = gcc
 CFLAGS = -g -I ./src
-OBJS = obj_test lex_test parse_test gencj
+OBJS = cj
 
 all: $(OBJS)
-
-obj_test: test/obj_test.c
-	$(CC) $(CFLAGS) $^ -o $@
-
-lex_test: test/lex_test.c
-	$(CC) $(CFLAGS) $^ -o $@
-
-parse_test: test/parse_test.c
-	$(CC) $(CFLAGS) $^ -o $@
-
-gencj: test/gencj.c
-	$(CC) $(CFLAGS) $^ -o $@
 
 cj: src/cj.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 run: $(OBJS)
-	./obj_test
-	./parse_test prog/stmt1.cj
-
-#	./lex_test prog/hello.cj
+	./cj prog/hello.cj
+	./cj prog/stmt1.cj
+	./cj prog/fn.cj
+	./cj prog/sum.cj
+	./cj prog/matrix.cj
+	./cj prog/array.cj
+	./cj prog/mt.cj
+	./cj prog/if.cj
 
 clean:
 	rm -f $(OBJS)

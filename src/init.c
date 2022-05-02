@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-
 #define NMAX 100000
 int src, debug, o_run, o_dump;
 int line = 1;
@@ -10,42 +5,23 @@ int line = 1;
 char source[NMAX], *p=source, *lp=source;
 char target[NMAX], *e=target, *le=target;
 
-#define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
-#define emit(...) { printf(__VA_ARGS__); sprintf(e, __VA_ARGS__); e+=strlen(e); }
-
-// token 的 id 與 vm 的 op 共用列舉編碼
-typedef enum op_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
-  Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
-  AsciiEnd=128, 
-  Id=130, Num, Str, Fn, Sys, 
-  If=140, Return, While, For, Function, 
-  Stmts=150, Block, Array, Expr,
-  Params=160, Args, Term,
-  Op1=170, Inc, Dec, Op1End,  // 一元運算
-  Op2=180, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End, // 二元運算 
-  End
-} op_t;
-
 char *op_names[] = {
-  "none", 
-  "id", "num", "str", "fn", "sys", 
-  "else", "if", "return", "while",
-  "op1", "++", "--", "op1end",
-  "op2", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
+  "op1begin", "++", "--", "op1end",
+  "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
 };
 
 char* op_name(int op, char *name) {
-  if (op <= AsciiEnd)
+  if (op < AsciiEnd)
     sprintf(name, "%c", (char) op);
-  else if (op <= End)
-    sprintf(name, "%s", op_names[op]);
+  else if (op > Op1Begin && op < Op2End)
+    sprintf(name, "%s", op_names[op-Op1Begin]);
   else
     error("op_name(%d) out of range...", op);
   return name;
 }
 
 bool is_op2(int op) {
-  return strchr("+-*/%&|^<>", op) || (op > Op2 && op <Op2End);
+  return strchr("+-*/%&|^<>", op) || (op > Op2Begin && op <Op2End);
 }
 
 void init() {

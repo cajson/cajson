@@ -1,11 +1,3 @@
-typedef struct token_t {
-    int type;   // token 型態
-    int line;   // 所在行號
-    char *str;  // token 的字串
-    int len;    // token 的字串長度
-    sym_t *sym; // 指向 symbol
-} token_t;
-
 token_t tk;   // current token (目前 token)
 
 #define syntax_error() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, p-lp, __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }

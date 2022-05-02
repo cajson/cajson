@@ -1,8 +1,10 @@
-#include "init.c"
-#include "sym.c"
-#include "lex.c"
-#include "obj.c"
-#include "parser.c"
+#include <cj.h>
+#include <init.c>
+#include <sym.c>
+#include <lex.c>
+#include <ast.c>
+#include <parse.c>
+#include <gen_cj.c>
 
 int main(int argc, char **argv) {
   char *iFile, *oFile, *narg;
@@ -13,7 +15,7 @@ int main(int argc, char **argv) {
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'd') { debug = 1; --argc; ++argv; }
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'r') { o_run = 1; --argc; ++argv; }
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'u') { o_dump = 1; --argc; ++argv; }
-  if (argc < 1) { printf("usage: d0 [-s] [-d] [-r] [-u] in_file [-o] out_file...\n"); return -1; }
+  if (argc < 1) { printf("usage: cj [-s] [-d] [-r] [-u] in_file [-o] out_file...\n"); return -1; }
   iFile = *argv;
   if (argc > 1) {
     narg = *(argv+1);
@@ -23,9 +25,7 @@ int main(int argc, char **argv) {
     }
   }
   read_source(iFile);
-  lex(source);
-  parse(source);
-  // if (compile(fd)==-1) return -1; // 編譯
+  node_t *ast = parse(source);
+  gen_cj(ast);
+  printf("\n");
 }
-
- 
