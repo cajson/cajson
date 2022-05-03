@@ -27,12 +27,12 @@ static void gen_op2(node_t *node1, int op, node_t *node2) {
     gen_code(node2);
     emit(")");
 }
-
+/*
 // item = Num | Str | fn | array | block | ( expr ) | term
 static void gen_item(node_t *item) {
     gen_code(item->node);
 }
-
+*/
 // term =  id ( [expr] | . id | args )*
 static void gen_term(node_t *id, link_t *head) {
     link_t *p;

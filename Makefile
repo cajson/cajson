@@ -17,6 +17,7 @@ run: $(OBJS)
 	./cj prog/sum.cj
 	./cj prog/for.cj
 	./cj prog/mt.cj
+	./cj prog/comment.cj
 
 clean:
 	rm -f $(OBJS)

@@ -99,8 +99,8 @@ node_t *item() {
     } else if (tk.type == '[') { // array
         return array();
     } else if (tk.type == '{') { // block
-        return op1(Item, block()); // Item 中的 block 需包起來，方便識別
-        // return block();
+        // return op1(Item, block()); // Item 中的 block 需包起來，方便識別
+        return block();
     } else if (tk.type == '(') { // ( expr )
         skip('(');
         node_t *e = expr();

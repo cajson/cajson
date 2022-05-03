@@ -4,7 +4,8 @@ static int block_level = 0;
 static int fn_level = 0;
 
 static void indent(int level) {
-    printf(" %3d %*s", level, level*2, "");
+    // printf(" %3d %*s", level, level*2, "");
+    printf("%*s", level*2, "");
 }
 
 static void push(int type) {
@@ -93,10 +94,10 @@ static void gen_code(node_t *me) {
         link_t *head = me->list->head;
         node_t *id = head->node;
         gen_term(id, head->next);
-    } else if (type == Item) { // item = Num | Str | function | array | block | ( expr ) | term
+/*    } else if (type == Item) { // item = Num | Str | function | array | block | ( expr ) | term
         push(Item);
         gen_item(me);
-        pop(Item);
+        pop(Item);*/
     } else if (is_op2(type)) {
         args = me->array->nodes;
         gen_op2(args[0], type, args[1]);

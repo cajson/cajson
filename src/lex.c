@@ -40,22 +40,19 @@ void scan() { // 詞彙解析 lexer
       tk.sym = sym_add(tk.str, p-tk.str);
       tk.type = Str;
       break;
-    } // 以下為運算元 =+-!<>|&^%*[?~, ++, --, !=, <=, >=, ||, &&, ~  ;{}()],:
-    else {
+    } else if (ch == '/' && *p == '/') { // 註解  //... 
+        ++p;
+        while (*p != 0 && *p != '\n') ++p;
+    } else if (ch == '/' && *p == '*') { // 註解 /*...*/
+        ++p;
+        while (!(*p =='*' && *(p+1) == '/')) {
+          if (*p == '\n') line++;
+          ++p;
+        }
+        p+=2;
+    } else { // 以下為運算元 =+-!<>|&^%*[?~, ++, --, !=, <=, >=, ||, &&, ~  ;{}()],:
       tk.type = ch;
-      if (ch == '/' && *p == '/') { // 註解  //... 
-          ++p;
-          while (*p != 0 && *p != '\n') ++p;
-          tk.type = End; // 這一行必須加，否則檔尾有註解會發生錯誤
-      } else if (ch == '/' && *p == '*') { // 註解 /*...*/
-          ++p;
-          while (!(*p =='*' && *(p+1) == '/')) {
-            if (*p == '\n') line++;
-            ++p;
-          }
-          p+=2;
-          tk.type = End;
-      } else if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
+      if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
       else if (ch == '+') { if (*p == '+') { ++p; tk.type = Inc; } break; }
       else if (ch == '-') { if (*p == '-') { ++p; tk.type = Dec; } break; }
       else if (ch == '!') { if (*p == '=') { ++p; tk.type = Neq; } break; }
