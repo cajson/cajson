@@ -1,9 +1,5 @@
 sum:fn(n) {
-    i=1
-    s=1
-    while (i<=n) {
-        s=s+i
-        i=i+1
-    }
+    s:0
+    for i=1 to n s=s+i
     return s
 }

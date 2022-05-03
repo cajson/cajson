@@ -7,6 +7,7 @@ char source[NMAX], *p=source, *lp=source;
 char target[NMAX], *e=target, *le=target;
 
 char *op_names[] = {
+  "op0begin", "continue", "break", "op0end",
   "op1begin", "++", "--", "op1end",
   "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
 };
@@ -14,8 +15,8 @@ char *op_names[] = {
 char* op_name(int op, char *name) {
   if (op < AsciiEnd)
     sprintf(name, "%c", (char) op);
-  else if (op > Op1Begin && op < Op2End)
-    sprintf(name, "%s", op_names[op-Op1Begin]);
+  else if (op > Op0Begin && op < Op2End)
+    sprintf(name, "%s", op_names[op-Op0Begin]);
   else
     error("op_name(%d) out of range...", op);
   return name;

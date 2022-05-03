@@ -1,11 +1,5 @@
 #include <gen.h>
 
-static int level = 0;
-
-static void indent() {
-    printf("%*s", level*2, "");
-}
-
 static void gen_str(node_t *node) {
     gen_sym(node);
 }
@@ -18,6 +12,12 @@ static void gen_id(node_t *node) {
     gen_sym(node);
 }
 
+static void gen_op0(int op) {
+    char name[20];
+    op_name(op, name);
+    emit("%s", name);
+}
+
 static void gen_op2(node_t *node1, int op, node_t *node2) {
     emit("(");
     gen_code(node1);
@@ -26,6 +26,11 @@ static void gen_op2(node_t *node1, int op, node_t *node2) {
     emit("%s", name);
     gen_code(node2);
     emit(")");
+}
+
+// item = Num | Str | fn | array | block | ( expr ) | term
+static void gen_item(node_t *item) {
+    gen_code(item->node);
 }
 
 // term =  id ( [expr] | . id | args )*
@@ -70,7 +75,7 @@ static void gen_array(link_t *head) {
     emit("]");
 }
 
-// args  = ( expr* )
+// args = ( expr* )
 static void gen_args(link_t *head) {
     emit("(");
     gen_list(head);
@@ -86,45 +91,74 @@ static void gen_assign(node_t *id, char op, node_t *exp) {
 
 // return expr
 static void gen_return(node_t *exp) {
-    emit(" return ");
+    emit("return");
     gen_code(exp);
 }
 
 // while expr stmt
 static void gen_while(node_t *exp, node_t *stmt) {
-    emit(" while "); gen_code(exp);
+    emit("while"); gen_code(exp);
     gen_code(stmt);
 }
 
 // if expr stmt (else stmt)?
 static void gen_if(node_t *exp, node_t *stmt1, node_t *stmt2) {
-    emit(" if "); gen_code(exp);
+    emit("if"); gen_code(exp);
     gen_code(stmt1);
     if (stmt2) {
-        emit(" else ");
+        emit("else");
         gen_code(stmt2);
     }
 }
 
-// for id in expr stmt
-static void gen_for(node_t *id, node_t *exp, node_t *stmt) {
-    emit(" for ");
+// for id op expr stmt
+static void gen_for3(char *op, node_t *id, node_t *exp, node_t *stmt) {
+    emit("for");
     gen_code(id);
-    emit(" in ");
+    emit(op);
     gen_code(exp);
+    gen_code(stmt);
+}
+
+// for id in expr stmt
+static void gen_for_in(node_t *id, node_t *exp, node_t *stmt) {
+    gen_for3("in", id, exp, stmt);
+}
+
+// for id of expr stmt
+static void gen_for_of(node_t *id, node_t *exp, node_t *stmt) {
+    gen_for3("of", id, exp, stmt);
+}
+
+// for id=expr to expr (step expr) stmt
+static void gen_for_to(node_t *id, node_t *from, node_t *to, node_t *step, node_t *stmt) {
+    emit("for");
+    gen_code(id);
+    emit("=");
+    gen_code(from);
+    emit("to");
+    gen_code(to);
+    if (step != NULL) {
+        emit("step");
+        gen_code(step);
+    }
     gen_code(stmt);
 }
 
 // function = fn (params) block
 static void gen_function(node_t *params, node_t *block) {
-    emit(" fn"); gen_code(params);
+    emit("fn");
+    gen_code(params);
     gen_code(block);
 }
 
 // stmt
 static void gen_stmt(node_t *stmt) {
+    if (top == 0 || peek() == Block) {
+        emit("\n/* %-3d*/\t", stmt->line);
+        indent(block_level);
+    }
     gen_code(stmt->node);
-    if (level == 0) { emit(" // line:%d\n", stmt->line); } else emit(" ");
 }
 
 // stmts = stmt*
@@ -138,16 +172,14 @@ static void gen_stmts(node_t *node) {
 
 // block = { stmts }
 static void gen_block(node_t *block) {
-    emit("{"); 
-    level ++;
+    emit("\n/*    */\t"); indent(block_level-1); emit("{");
     gen_stmts(block->node); // stmts
-    level --;
-    emit("}");
+    emit("\n/*    */\t"); indent(block_level-1); emit("}");
 }
 
 #include <gen.c>
 
 void gen_cj(node_t *root) {
-    emit("// source file: %s\n", iFile);
+    emit0("// source file: %s\n", iFile);
     return gen_code(root);
 }

@@ -99,7 +99,8 @@ node_t *item() {
     } else if (tk.type == '[') { // array
         return array();
     } else if (tk.type == '{') { // block
-        return block();
+        return op1(Item, block()); // Item 中的 block 需包起來，方便識別
+        // return block();
     } else if (tk.type == '(') { // ( expr )
         skip('(');
         node_t *e = expr();
@@ -146,14 +147,35 @@ node_t *stmt() {
     } else if (match("for")) { // for id in expr stmt
         next();
         node_t *nid = id();
-        skip_str("in");
-        e = expr();
-        s = stmt();
-        r->node = op3(For, nid, e, s);
+        if (match("in") || match("of")) {
+            token_t optk = next();
+            int op = (tk_match(optk, "in"))?ForIn:ForOf;
+            e = expr();
+            s = stmt();
+            r->node = op3(op, nid, e, s);
+        } else if (match("=")) {
+            next();
+            node_t *step=NULL, *from, *to;
+            from = expr();
+            skip_str("to");
+            to = expr();
+            if (match("step")) {
+                next();
+                step = expr();
+            }
+            s = stmt();
+            r->node = op5(ForTo, nid, from, to, step, s);
+        }
     } else if (match("return")) { // return exp
         next();
         e = expr();
         r->node = op1(Return, e);
+    } else if (match("continue")) { // continue
+        next();
+        r->node = op0(Continue);
+    } else if (match("break")) { // break
+        next();
+        r->node = op0(Break);
     } else {
         scan_save();
         bool is_exp = true;

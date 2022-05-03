@@ -71,9 +71,13 @@ void scan() { // 詞彙解析 lexer
   // printf("tk=%.*s ", tk.len, tk.str);
 }
 
-bool match(char *str) {
+bool tk_match(token_t t, char *str) {
     int len = strlen(str);
-    return len == tk.len && memcmp(str, tk.str, len)==0;
+    return len == t.len && memcmp(str, t.str, len)==0;
+}
+
+bool match(char *str) {
+    return tk_match(tk, str);
 }
 
 token_t next() {

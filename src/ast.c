@@ -35,6 +35,10 @@ list_t *list() {
     return pool(sizeof(list_t));
 }
 
+node_t *op0(int op) {
+    return node(op);
+}
+
 node_t *op1(int op, node_t *n1) {
     node_t *n = node(op);
     n->node = n1;
@@ -55,6 +59,16 @@ node_t *op2(int op, node_t *n1, node_t *n2) {
 node_t *op3(int op, node_t *n1, node_t *n2, node_t *n3) {
     node_t *a[] = { n1, n2, n3 };
     return op_n(op, a, 3);
+}
+
+node_t *op4(int op, node_t *n1, node_t *n2, node_t *n3, node_t *n4) {
+    node_t *a[] = { n1, n2, n3, n4 };
+    return op_n(op, a, 4);
+}
+
+node_t *op5(int op, node_t *n1, node_t *n2, node_t *n3, node_t *n4, node_t *n5) {
+    node_t *a[] = { n1, n2, n3, n4, n5 };
+    return op_n(op, a, 5);
 }
 
 void list_add(list_t *list, node_t *node) {
