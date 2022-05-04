@@ -136,7 +136,7 @@ static void gen_if(node_t *exp, node_t *stmt1, node_t *stmt2) {
 static void gen_for3(char *op, node_t *id, node_t *exp, node_t *stmt) {
     emit("for");
     gen_code(id);
-    emit(op);
+    emit("%s", op);
     gen_code(exp);
     gen_code(stmt);
 }

@@ -118,6 +118,6 @@ static void gen_code(node_t *me) {
     } else if (type==Str) {
         gen_str(me);
     } else {
-        error("gen_code:unknown type=%d=%c");
+        error("gen_code:unknown type=%d=%c", type, type);
     }
 }

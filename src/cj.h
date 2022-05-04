@@ -68,6 +68,6 @@ struct list_t {
 
 // API
 int read_source(char *iFile);
-int lex(char *source);
+void lex(char *source);
 node_t *parse(char *source);
 void gen_cj(node_t *root);

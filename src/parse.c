@@ -76,7 +76,7 @@ node_t *term() {
             node_t *mid = id();
             list_add(r->list, op1('.', mid));
         } else if (tk.type == '(') { // function call
-            list_add(r->list, args('(', ')'));
+            list_add(r->list, args());
         }
     }
     list_reverse(r->list);
@@ -97,7 +97,7 @@ node_t *factor() {
         skip(')');
         return e;
     } else {
-        term();
+        return term();
     }
 }
 

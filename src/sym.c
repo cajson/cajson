@@ -10,7 +10,7 @@ unsigned int hash(char *name, int len) { // 計算雜湊值
     return h;
 }
 
-int sym_init() {
+void sym_init() {
     memset(symtb, 0, sizeof(symtb));
 }
 

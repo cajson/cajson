@@ -1,6 +1,6 @@
 token_t tk;   // current token (目前 token)
 
-#define syntax_error() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, p-lp, __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
+#define syntax_error() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, (int)(p-lp), __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
 
 void scan() { // 詞彙解析 lexer
   tk.type = End;
@@ -10,9 +10,9 @@ void scan() { // 詞彙解析 lexer
     char ch = *p++;
     if (ch == '\n') { // 換行
       if (src) {
-        printf("// %d: %.*s", line, p - lp, lp); // 印出該行
+        printf("// %d: %.*s", line, (int) (p-lp), lp); // 印出該行
         lp = p;     // lp = p  = 新一行的原始碼開頭
-        printf(le); // 印出上一行的所有目的碼
+        printf("%s", le); // 印出上一行的所有目的碼
         le = e;
       }
       ++line;
@@ -22,7 +22,7 @@ void scan() { // 詞彙解析 lexer
     // }
     else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_') { // 取得變數名稱
       while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_')
-          *p++;
+          p++;
       tk.type = Id;
       tk.sym = sym_add(tk.str, p-tk.str);
       break;
@@ -90,7 +90,7 @@ token_t tk0; char *p0;
 void scan_save() { tk0 = tk; p0=p; }
 void scan_restore() { tk = tk0; p=p0; }
 
-int lex(char *source) {
+void lex(char *source) {
     p = source;
     src = 1;
     next();
