@@ -1,15 +1,3 @@
-#define NPTR 100000
-void *pools[NPTR];
-int poolTop = 0;
-
-void *pool(int size) {
-  void *p=malloc(size);
-  memset(p, 0, size);
-  if (!p) error("pool() alloc fail!");
-  pools[poolTop++] = p;
-  return p;
-}
-
 node_t *node(int type) {
     node_t *n = pool(sizeof(node_t));
     n->type = type;

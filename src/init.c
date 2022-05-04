@@ -3,22 +3,22 @@ char *iFile, *oFile;
 int src, debug, o_run, o_dump;
 int line = 1;
 // char data[NMAX], *datap=data;
-char source[NMAX], *p=source, *lp=source;
-char target[NMAX], *e=target, *le=target;
+char *source, *p, *lp;
+// char target[NMAX], *e=target, *le=target;
 
-char *op_names[] = {
+char *id_names[] = {
   "op0begin", "continue", "break", "op0end",
   "op1begin", "++", "--", "op1end",
-  "op2begin", ":", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
+  "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
 };
 
-char* op_name(int op, char *name) {
+char* id_name(int op, char *name) {
   if (op < AsciiEnd)
     sprintf(name, "%c", (char) op);
   else if (op > Op0Begin && op < Op2End)
-    sprintf(name, "%s", op_names[op-Op0Begin]);
+    sprintf(name, "%s", id_names[op-Op0Begin]);
   else
-    error("op_name(%d) out of range...", op);
+    error("id_name(%d) out of range...", op);
   return name;
 }
 
@@ -31,7 +31,7 @@ bool is_op2(int op) {
 }
 
 void init() {
-  memset(target, 0, sizeof(target));
+  // memset(target, 0, sizeof(target));
 }
 
 int read_source(char *iFile) {

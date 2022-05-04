@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -I ./src -std=gnu11 
+CFLAGS = -Wall -g -I ./src -std=gnu11 
 OBJS = cj
 
 all: $(OBJS)

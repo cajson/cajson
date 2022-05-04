@@ -14,7 +14,7 @@ typedef struct sym_t {
 } sym_t;
 
 // lex
-typedef enum op_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
+typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
   Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
   Id, Num, Str, Function, Array, Map, Pair, Block, Args, Params, Param, 
@@ -24,10 +24,10 @@ typedef enum op_t { // token : 0-127 直接用該字母表達， 128 以後用�
   Op1Begin, Inc, Dec, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
   End,
-} op_t;
+} id_t;
 
 typedef struct token_t {
-    int type;   // token 型態
+    id_t type;   // token 型態
     int line;   // 所在行號
     char *str;  // token 的字串
     int len;    // token 的字串長度

@@ -12,14 +12,11 @@ void scan() { // 詞彙解析 lexer
       if (src) {
         printf("// %d: %.*s", line, (int) (p-lp), lp); // 印出該行
         lp = p;     // lp = p  = 新一行的原始碼開頭
-        printf("%s", le); // 印出上一行的所有目的碼
-        le = e;
+        // printf("%s", le); // 印出上一行的所有目的碼
+        // le = e;
       }
       ++line;
     }
-    // else if (ch == '#') { // 取得 #include <stdio.h> 這類的一整行
-    //   while (*p != 0 && *p != '\n') ++p;
-    // }
     else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_') { // 取得變數名稱
       while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_')
           p++;

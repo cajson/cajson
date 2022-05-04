@@ -14,13 +14,13 @@ static void gen_id(node_t *node) {
 
 static void gen_op0(int op) {
     char name[20];
-    op_name(op, name);
+    id_name(op, name);
     emit("%s", name);
 }
 
 static void gen_op1(int op, node_t *node) {
     char name[20];
-    op_name(op, name);
+    id_name(op, name);
     emit("%s", name);
     gen_code(node);
 }
@@ -29,7 +29,7 @@ static void gen_op2(node_t *node1, int op, node_t *node2) {
     emit("(");
     gen_code(node1);
     char name[20];
-    op_name(op, name);
+    id_name(op, name);
     emit("%s", name);
     gen_code(node2);
     emit(")");
@@ -91,7 +91,7 @@ static void gen_pair(node_t *n1, node_t *n2) {
 
 // map = [ (expr:expr)* ]
 static void gen_map(link_t *head) {
-    emit("map {");
+    emit("{");
     gen_list(head);
     emit("}");
 }

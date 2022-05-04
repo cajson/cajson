@@ -1,6 +1,7 @@
-#define emit0(...) { printf(__VA_ARGS__); sprintf(e, __VA_ARGS__); e+=strlen(e); }
-#define emit(...) { printf(__VA_ARGS__); sprintf(e, __VA_ARGS__); e+=strlen(e); printf(" "); }
-#define cemit(ch) emit("%c", ch)
+// #define emit0(...) { printf(__VA_ARGS__); sprintf(e, __VA_ARGS__); e+=strlen(e); }
+// #define emit(...) { printf(__VA_ARGS__); sprintf(e, __VA_ARGS__); e+=strlen(e); printf(" "); }
+#define emit0(...) { printf(__VA_ARGS__); }
+#define emit(...) { printf(__VA_ARGS__); printf(" "); }
 
 static void gen_code(node_t *me);
 static void gen_list(link_t *head);

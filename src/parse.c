@@ -62,7 +62,7 @@ node_t *params() {
 // term = id ( [expr] | . id | args )*
 node_t *term() {
     node_t *r = node(Term);
-    node_t *nid = id(), *t = nid;
+    node_t *nid = id();
     r->list = list();
     list_add(r->list, nid);
     while (strchr("[.(", tk.type)) {
@@ -105,7 +105,7 @@ node_t *factor() {
 node_t *map() {
     node_t *r = node(Map);
     r->list = list();
-    skip_str("map");
+    // skip_str("map");
     skip('{');
     while (tk.type != '}') {
         node_t *e1 = expr();
@@ -129,7 +129,7 @@ node_t *item() {
         skip(')');
         node_t *b1 = block();
         return op2(Function, p1, b1);
-    } else if (match("map")) { // map
+    } else if (tk.type == '{') { // if (match("map")) { // map
         return map();
     } else if (tk.type == '[') { // array
         return array();

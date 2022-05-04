@@ -1,4 +1,5 @@
 #include <cj.h>
+#include <lib.c>
 #include <init.c>
 #include <sym.c>
 #include <lex.c>
@@ -8,7 +9,7 @@
 
 int main(int argc, char **argv) {
   char *narg;
-  int o_save = 0, o_lex = 0;
+  int o_lex = 0;
   // 主程式
   --argc; ++argv; // 略過執行檔名稱
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'l') { o_lex = 1; --argc; ++argv; }
@@ -21,11 +22,11 @@ int main(int argc, char **argv) {
   if (argc > 1) {
     narg = *(argv+1);
     if (*narg == '-' && narg[1] == 'o') {
-      o_save = 1;
       oFile = *(argv+2);
     }
   }
-  read_source(iFile);
+  p = lp = source = file_read(iFile);
+  // read_source(iFile);
   if (o_lex) { lex(source); return 1; }
   node_t *ast = parse(source);
   gen_cj(ast);
