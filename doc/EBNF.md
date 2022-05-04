@@ -19,9 +19,11 @@ expr = item (op2 expr)*
 
 item = Str | function | array | map | ( expr ) | factor
 
-factor = (~!) (factor) | Num | (expr) | term
+factor = (!-~) (factor) | Num | (expr) | term
 
-term = id ( [expr] | . id | args )*
+term = pid ( [expr] | . id | args )*
+
+pid = (@|$)? id
 
 function = fn (params) block
 

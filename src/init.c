@@ -8,7 +8,7 @@ char *source, *p, *lp;
 
 char *id_names[] = {
   "op0begin", "continue", "break", "op0end",
-  "op1begin", "++", "--", "op1end",
+  "op1begin", "-", "++", "--", "op1end",
   "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
 };
 
@@ -23,7 +23,7 @@ char* id_name(int op, char *name) {
 }
 
 bool is_op1(int op) {
-  return strchr("~!@$", op) || (op > Op1Begin && op <Op1End);
+  return strchr("!~@$", op) || (op > Op1Begin && op <Op1End);
 }
 
 bool is_op2(int op) {

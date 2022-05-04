@@ -22,7 +22,7 @@ typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用�
   If, Return, While, ForIn, ForOf, ForTo, 
   Stmts, Stmt, Expr, Item, Term, 
   Op0Begin=150, Continue, Break, Op0End,
-  Op1Begin, Inc, Dec, Op1End, 
+  Op1Begin, Neg, Inc, Dec, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
   End,
 } id_t;

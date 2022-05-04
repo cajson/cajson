@@ -91,10 +91,10 @@ node_t *term() {
     return r;
 }
 
-// factor = (~!) (factor) | Num | (expr) | term
+// factor = (!-~) (factor) | Num | (expr) | term
 node_t *factor() {
-    if (strchr("~!", tk.type)) {
-        int op = tk.type;
+    if (strchr("!-~", tk.type)) {
+        int op = (tk.type=='-')?Neg:tk.type;
         next();
         return op1(op, factor());
     } else if (tk.type == Num) {
@@ -221,14 +221,11 @@ node_t *stmt() {
         scan_save();
         bool is_exp = true;
         if (strchr("@$", tk.type) || tk.type == Id) {
-            node_t *nid = pid(); // skip(Id);
-            if (tk.type=='=' || tk.type==':') { // (strchr("=:", tk.type)) {
+            node_t *nid = pid();
+            if (tk.type=='=' || tk.type==':') {
                 char op = tk.type;
                 next();
                 e = expr();
-                // code gen id=exp
-                // node_t *nid = node(Id);
-                // nid->sym = tid.sym;
                 r->node = op2(op, nid, e);
                 is_exp = false;
             } else {

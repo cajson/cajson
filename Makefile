@@ -9,7 +9,6 @@ cj: src/cj.c
 
 run: $(OBJS)
 	./cj prog/hello.cj
-	./cj prog/stmt1.cj
 	./cj prog/fn.cj
 	./cj prog/matrix.cj
 	./cj prog/array.cj
@@ -20,6 +19,7 @@ run: $(OBJS)
 	./cj prog/mt.cj
 	./cj prog/pid1.cj
 	./cj prog/if.cj
+	./cj prog/stmt1.cj
 
 test: $(OBJS)
 	./cj prog/exp1.cj
