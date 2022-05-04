@@ -9,7 +9,7 @@ char target[NMAX], *e=target, *le=target;
 char *op_names[] = {
   "op0begin", "continue", "break", "op0end",
   "op1begin", "++", "--", "op1end",
-  "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
+  "op2begin", ":", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
 };
 
 char* op_name(int op, char *name) {

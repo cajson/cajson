@@ -16,9 +16,9 @@ run: $(OBJS)
 	./cj prog/if.cj
 	./cj prog/sum.cj
 	./cj prog/for.cj
-	./cj prog/mt.cj
 	./cj prog/comment.cj
 	./cj prog/exp1.cj
+	./cj prog/mt.cj
 
 test: $(OBJS)
 	./cj prog/exp1.cj

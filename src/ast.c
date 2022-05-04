@@ -56,6 +56,10 @@ node_t *op2(int op, node_t *n1, node_t *n2) {
     return op_n(op, a, 2);
 }
 
+node_t *pair(node_t *n1, node_t *n2) {
+    return op2(Pair, n1, n2);
+}
+
 node_t *op3(int op, node_t *n1, node_t *n2, node_t *n3) {
     node_t *a[] = { n1, n2, n3 };
     return op_n(op, a, 3);

@@ -88,6 +88,8 @@ static void gen_code(node_t *me) {
         gen_param(args[0], args[1]);
     } else if (type == Array) {
         gen_array(me->list->head);
+    } else if (type == Map) {
+        gen_map(me->list->head);
     } else if (type == Args) { // args  = ( expr* )
         gen_args(me->list->head);
     } else if (type == Term) { // term =  id ([expr] | . id | args )*
@@ -100,6 +102,9 @@ static void gen_code(node_t *me) {
         pop(Item);*/
     } else if (is_op1(type)) {
         gen_op1(type, me->node);
+    } else if (type == Pair) {
+        args = me->array->nodes;
+        gen_pair(args[0], args[1]);
     } else if (is_op2(type)) {
         args = me->array->nodes;
         gen_op2(args[0], type, args[1]);

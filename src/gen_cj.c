@@ -83,6 +83,19 @@ static void gen_array(link_t *head) {
     emit("]");
 }
 
+static void gen_pair(node_t *n1, node_t *n2) {
+    gen_code(n1);
+    emit(":");
+    gen_code(n2);
+}
+
+// map = [ (expr:expr)* ]
+static void gen_map(link_t *head) {
+    emit("map {");
+    gen_list(head);
+    emit("}");
+}
+
 // args = ( expr* )
 static void gen_args(link_t *head) {
     emit("(");

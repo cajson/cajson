@@ -5,7 +5,8 @@ stmts = stmt*
 
 block = { stmts }
 
-stmt = while expr stmt           | 
+stmt = block                     |
+       while expr stmt           | 
        if expr stmt (else stmt)? |
        for id (in|of) expr stmt  |
        for id=expr to expr step expr stmt |
@@ -16,7 +17,7 @@ stmt = while expr stmt           |
 
 expr = item (op2 expr)*
 
-item = Str | function | array | block | ( expr ) | factor
+item = Str | function | array | map | ( expr ) | factor
 
 factor = (~!) (factor) | Num | (expr) | term
 
@@ -24,11 +25,13 @@ term = id ( [expr] | . id | args )*
 
 function = fn (params) block
 
+array = [ expr* ]
+
+map = { ((id|Str|Num):expr)* }
+
 params = param*
 
 param = id (:expr)?
-
-array = [ expr* ]
 
 args  = ( expr* )
 

@@ -101,7 +101,24 @@ node_t *factor() {
     }
 }
 
-// item = Str | fn | array | block | factor
+// map = 'map' { (expr:expr)* }
+node_t *map() {
+    node_t *r = node(Map);
+    r->list = list();
+    skip_str("map");
+    skip('{');
+    while (tk.type != '}') {
+        node_t *e1 = expr();
+        skip(':');
+        node_t *e2 = expr();
+        list_add(r->list, pair(e1, e2));
+    }
+    skip('}');
+    list_reverse(r->list);
+    return r;
+}
+
+// item = Str | fn | array | map | factor
 node_t *item() {
     if (tk.type == Str) {
         return str();
@@ -112,11 +129,10 @@ node_t *item() {
         skip(')');
         node_t *b1 = block();
         return op2(Function, p1, b1);
+    } else if (match("map")) { // map
+        return map();
     } else if (tk.type == '[') { // array
         return array();
-    } else if (tk.type == '{') { // block
-        // return op1(Item, block()); // Item 中的 block 需包起來，方便識別
-        return block();
     } else {
         return factor();
     }
@@ -133,14 +149,20 @@ node_t *expr() {
     return r;
 }
 
-// stmt = while expr block          | 
+// stmt = block                     |
+//        while expr stmt           | 
 //        if expr stmt (else stmt)? |
-//        for id in expr stmt       | 
-//        return exp                |
+//        for id (in|of) expr stmt  |
+//        for id=expr to expr step expr stmt |
+//        return expr               |
+//        continue                  |
+//        break                     |
 //        (id=)? expr
 node_t *stmt() {
     node_t *e, *s, *r=node(Stmt);
-    if (match("while")) { // while expr stmt
+    if (tk.type == '{') { // block
+        return block();
+    } else if (match("while")) { // while expr stmt
         next();
         e = expr();
         s = stmt();
