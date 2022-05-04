@@ -207,7 +207,7 @@ node_t *stmt() {
             s = stmt();
             r->node = op5(ForTo, nid, from, to, step, s);
         }
-    } else if (match("return")) { // return exp
+    } else if (match("return") || tk.type == '?') { // ?exp = return exp
         next();
         e = expr();
         r->node = op1(Return, e);

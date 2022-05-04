@@ -18,8 +18,8 @@ run: $(OBJS)
 	./cj prog/comment.cj
 	./cj prog/exp1.cj
 	./cj prog/mt.cj
-
-#	./cj prog/if.cj
+	./cj prog/pid1.cj
+	./cj prog/if.cj
 
 test: $(OBJS)
 	./cj prog/exp1.cj
