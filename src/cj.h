@@ -15,6 +15,7 @@ typedef struct sym_t {
 
 // lex
 typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
+  None=0,
   Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
   Id, Num, Str, Function, Array, Map, Pair, Block, Args, Params, Param, 

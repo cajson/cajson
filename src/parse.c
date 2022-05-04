@@ -59,12 +59,20 @@ node_t *params() {
     return r;
 }
 
-// term = id ( [expr] | . id | args )*
+// pid = (@|$)? id
+node_t *pid() {
+    int pre = None;
+    if (strchr("@$", tk.type))
+        pre = next().type;
+    node_t *nid = id();
+    return (pre==None)?nid:op1(pre, nid);
+}
+
+// term = pid ( [expr] | . id | args )*
 node_t *term() {
     node_t *r = node(Term);
-    node_t *nid = id();
     r->list = list();
-    list_add(r->list, nid);
+    list_add(r->list, pid());
     while (strchr("[.(", tk.type)) {
         if (tk.type == '[') { // array member
             next();
@@ -212,15 +220,15 @@ node_t *stmt() {
     } else {
         scan_save();
         bool is_exp = true;
-        if (tk.type == Id) {
-            token_t tid = skip(Id);
+        if (strchr("@$", tk.type) || tk.type == Id) {
+            node_t *nid = pid(); // skip(Id);
             if (tk.type=='=' || tk.type==':') { // (strchr("=:", tk.type)) {
                 char op = tk.type;
                 next();
                 e = expr();
                 // code gen id=exp
-                node_t *nid = node(Id);
-                nid->sym = tid.sym;
+                // node_t *nid = node(Id);
+                // nid->sym = tid.sym;
                 r->node = op2(op, nid, e);
                 is_exp = false;
             } else {

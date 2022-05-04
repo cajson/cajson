@@ -34,17 +34,11 @@ static void gen_op2(node_t *node1, int op, node_t *node2) {
     gen_code(node2);
     emit(")");
 }
-/*
-// item = Num | Str | fn | array | block | ( expr ) | term
-static void gen_item(node_t *item) {
-    gen_code(item->node);
-}
-*/
 
-// term = id ( [expr] | . id | args )*
-static void gen_term(node_t *id, link_t *head) {
+// term = (@|$)? id ( [expr] | . id | args )*      // pid=(@|$)? id
+static void gen_term(node_t *pid, link_t *head) {
     link_t *p;
-    gen_code(id);
+    gen_code(pid);
     for (p=head; p != NULL; p = p->next) {
         node_t *n = p->node; int op = n->type;
         if (op == '[') {
