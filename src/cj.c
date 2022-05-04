@@ -8,9 +8,10 @@
 
 int main(int argc, char **argv) {
   char *narg;
-  int o_save;
+  int o_save = 0, o_lex = 0;
   // 主程式
   --argc; ++argv; // 略過執行檔名稱
+  if (argc > 0 && **argv == '-' && (*argv)[1] == 'l') { o_lex = 1; --argc; ++argv; }
   if (argc > 0 && **argv == '-' && (*argv)[1] == 's') { src = 1; --argc; ++argv; }
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'd') { debug = 1; --argc; ++argv; }
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'r') { o_run = 1; --argc; ++argv; }
@@ -25,7 +26,7 @@ int main(int argc, char **argv) {
     }
   }
   read_source(iFile);
-  // lex(source);
+  if (o_lex) { lex(source); return 1; }
   node_t *ast = parse(source);
   gen_cj(ast);
   printf("\n");

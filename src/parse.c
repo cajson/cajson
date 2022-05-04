@@ -42,7 +42,24 @@ node_t *array() {
     return exp_list(Array, '[', ']');
 }
 
-// term =  id ([expr] | . id | args )*
+// params = (id(:expr)?)*
+node_t *params() {
+    node_t *r = node(Params);
+    r->list = list();
+    while (tk.type != ')') { 
+        node_t *nid = id();
+        node_t *e = NULL;
+        if (tk.type == ':') {
+            skip(':');
+            e = expr();
+        }
+        list_add(r->list, op2(Param, nid, e));
+    }
+    list_reverse(r->list);
+    return r;
+}
+
+// term = id ( [expr] | . id | args )*
 node_t *term() {
     node_t *r = node(Term);
     node_t *nid = id(), *t = nid;
@@ -66,28 +83,27 @@ node_t *term() {
     return r;
 }
 
-// params = (id(:expr)?)*
-node_t *params() {
-    node_t *r = node(Params);
-    r->list = list();
-    while (tk.type != ')') { 
-        node_t *nid = id();
-        node_t *e = NULL;
-        if (tk.type == ':') {
-            skip(':');
-            e = expr();
-        }
-        list_add(r->list, op2(Param, nid, e));
+// factor = (~!) (factor) | Num | (expr) | term
+node_t *factor() {
+    if (strchr("~!", tk.type)) {
+        int op = tk.type;
+        next();
+        return op1(op, factor());
+    } else if (tk.type == Num) {
+        return num();
+    } else if (tk.type == '(') { // ( expr )
+        skip('(');
+        node_t *e = expr();
+        skip(')');
+        return e;
+    } else {
+        term();
     }
-    list_reverse(r->list);
-    return r;
 }
 
-// item = Num | Str | fn | array | block | ( expr ) | term
+// item = Str | fn | array | block | factor
 node_t *item() {
-    if (tk.type == Num) {
-        return num();
-    } else if (tk.type == Str) {
+    if (tk.type == Str) {
         return str();
     } else if (match("fn")) { // fn (params) block
         next();
@@ -101,13 +117,8 @@ node_t *item() {
     } else if (tk.type == '{') { // block
         // return op1(Item, block()); // Item 中的 block 需包起來，方便識別
         return block();
-    } else if (tk.type == '(') { // ( expr )
-        skip('(');
-        node_t *e = expr();
-        skip(')');
-        return e;
     } else {
-        return term();
+        return factor();
     }
 }
 

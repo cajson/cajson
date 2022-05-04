@@ -18,6 +18,10 @@ run: $(OBJS)
 	./cj prog/for.cj
 	./cj prog/mt.cj
 	./cj prog/comment.cj
+	./cj prog/exp1.cj
+
+test: $(OBJS)
+	./cj prog/exp1.cj
 
 clean:
 	rm -f $(OBJS)

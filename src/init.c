@@ -22,6 +22,10 @@ char* op_name(int op, char *name) {
   return name;
 }
 
+bool is_op1(int op) {
+  return strchr("~!", op) || (op > Op1Begin && op <Op1End);
+}
+
 bool is_op2(int op) {
   return strchr("+-*/%&|^<>", op) || (op > Op2Begin && op <Op2End);
 }

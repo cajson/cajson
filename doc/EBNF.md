@@ -16,7 +16,11 @@ stmt = while expr stmt           |
 
 expr = item (op2 expr)*
 
-item = Num | Str | function | array | block | ( expr ) | term
+item = Str | function | array | block | ( expr ) | factor
+
+factor = (~!) (factor) | Num | (expr) | term
+
+term = id ( [expr] | . id | args )*
 
 function = fn (params) block
 
@@ -27,8 +31,6 @@ param = id (:expr)?
 array = [ expr* ]
 
 args  = ( expr* )
-
-term =  id ( [expr] | . id | args )*
 
 num : integer | float
 str : '...'

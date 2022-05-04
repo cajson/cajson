@@ -18,6 +18,13 @@ static void gen_op0(int op) {
     emit("%s", name);
 }
 
+static void gen_op1(int op, node_t *node) {
+    char name[20];
+    op_name(op, name);
+    emit("%s", name);
+    gen_code(node);
+}
+
 static void gen_op2(node_t *node1, int op, node_t *node2) {
     emit("(");
     gen_code(node1);
@@ -33,7 +40,8 @@ static void gen_item(node_t *item) {
     gen_code(item->node);
 }
 */
-// term =  id ( [expr] | . id | args )*
+
+// term = id ( [expr] | . id | args )*
 static void gen_term(node_t *id, link_t *head) {
     link_t *p;
     gen_code(id);

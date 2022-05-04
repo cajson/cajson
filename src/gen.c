@@ -98,6 +98,8 @@ static void gen_code(node_t *me) {
         push(Item);
         gen_item(me);
         pop(Item);*/
+    } else if (is_op1(type)) {
+        gen_op1(type, me->node);
     } else if (is_op2(type)) {
         args = me->array->nodes;
         gen_op2(args[0], type, args[1]);

@@ -65,7 +65,7 @@ void scan() { // 詞彙解析 lexer
     }
   }
   tk.len = p-tk.str;
-  // printf("tk=%.*s ", tk.len, tk.str);
+  printf("%.*s ", tk.len, tk.str);
 }
 
 bool tk_match(token_t t, char *str) {
