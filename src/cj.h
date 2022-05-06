@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
-
+#define size(x) (sizeof(x)/sizeof(typeof (x)))
 // sym
 typedef struct sym_t {
     char *name;
@@ -16,12 +16,12 @@ typedef struct sym_t {
 // lex
 typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
   None=0,
-  Or='|',And='&',Assign='=',Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
+  Or='|',And='&', Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
   Id, Num, Str, Function, Array, Map, Pair, Block, Args, Params, Param, 
   If, Return, While, ForIn, ForOf, ForTo, 
-  Stmts, Stmt, Expr, Item, Term, 
-  Op0Begin=150, Continue, Break, Op0End,
+  Stmts, Stmt, Expr, Item, Term, Assign, Type,
+  Op0Begin=200, Continue, Break, Op0End,
   Op1Begin, Neg, Inc, Dec, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
   End,

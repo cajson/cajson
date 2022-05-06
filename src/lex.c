@@ -47,6 +47,7 @@ void scan() { // 詞彙解析 lexer
           ++p;
         }
         p+=2;
+    } else if (strchr(" \n\r\t;", ch)) { // 忽略空格與逗點分號，繼續往前讀...
     } else { // 以下為運算元 =+-!<>|&^%*[?~, ++, --, !=, <=, >=, ||, &&, ~  ;{}()],:
       tk.type = ch;
       if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
@@ -57,7 +58,6 @@ void scan() { // 詞彙解析 lexer
       else if (ch == '>') { if (*p == '=') { ++p; tk.type = Ge; } else if (*p == '>') { ++p; tk.type = Shr; } break; }
       else if (ch == '|') { if (*p == '|') { ++p; tk.type = Lor; } else break; }
       else if (ch == '&') { if (*p == '&') { ++p; tk.type = Land; } else break; }
-      else if (strchr(" \n\r\t,;", ch)) {} // 忽略空格與逗點分號，繼續往前讀...
       else { break; } // 其他字元，單一個字即 token
     }
   }
@@ -72,6 +72,13 @@ bool tk_match(token_t t, char *str) {
 
 bool match(char *str) {
     return tk_match(tk, str);
+}
+
+bool member(char *a[], int len) {
+    for (int i=0; i<len; i++) {
+      if (match(a[i])) return true;
+    }
+    return false;
 }
 
 token_t next() {

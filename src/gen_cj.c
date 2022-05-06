@@ -66,14 +66,14 @@ static void gen_param(node_t *id, node_t *exp) {
 // params = param*
 static void gen_params(link_t *head) {
     emit("(");
-    gen_list(head);
+    gen_list(head, ",");
     emit(")");
 }
 
 // array = [ expr* ]
 static void gen_array(link_t *head) {
     emit("[");
-    gen_list(head);
+    gen_list(head, ",");
     emit("]");
 }
 
@@ -86,22 +86,28 @@ static void gen_pair(node_t *n1, node_t *n2) {
 // map = [ (expr:expr)* ]
 static void gen_map(link_t *head) {
     emit("{");
-    gen_list(head);
+    gen_list(head, ",");
     emit("}");
 }
 
 // args = ( expr* )
 static void gen_args(link_t *head) {
     emit("(");
-    gen_list(head);
+    gen_list(head, ",");
     emit(")");
 }
 
-// (id [:=])? expr
-static void gen_assign(node_t *id, char op, node_t *exp) {
-    gen_code(id);
-    emit("%c", op);
-    gen_code(exp);
+// assign = pid(:type)?= expr
+static void gen_assign(node_t *pid, node_t *type, node_t *exp) {
+    gen_code(pid);
+    if (type) {
+        emit(":");
+        gen_list(type->list->head, "");
+    }
+    if (exp) {
+        emit("=");
+        gen_code(exp);
+    }
 }
 
 // return expr

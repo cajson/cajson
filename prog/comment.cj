@@ -1,4 +1,4 @@
-mean:fn(a) {
+mean:=fn(a) {
     s=0
     i=0
 /*

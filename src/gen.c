@@ -26,10 +26,10 @@ static void gen_sym(node_t *node) {
     emit("%.*s", node->sym->len, node->sym->name);
 }
 
-static void gen_list(link_t *head) {
+static void gen_list(link_t *head, char *spliter) {
     for (link_t *p = head; p != NULL; p = p->next) {
         gen_code(p->node);
-        if (p->next != NULL) emit(" ");
+        if (p->next != NULL) emit("%s", spliter);
     }
 }
 
@@ -100,6 +100,9 @@ static void gen_code(node_t *me) {
         push(Item);
         gen_item(me);
         pop(Item);*/
+    } else if (type==Assign) {
+        args = me->array->nodes;
+        gen_assign(args[0], args[1], args[2]);
     } else if (is_op1(type)) {
         gen_op1(type, me->node);
     } else if (type == Pair) {
@@ -108,9 +111,6 @@ static void gen_code(node_t *me) {
     } else if (is_op2(type)) {
         args = me->array->nodes;
         gen_op2(args[0], type, args[1]);
-    } else if (type=='=' || type == ':') {
-        args = me->array->nodes;
-        gen_assign(args[0], type, args[1]);
     } else if (type==Id) {
         gen_id(me);
     } else if (type==Num) {
