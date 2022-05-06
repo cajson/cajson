@@ -77,8 +77,8 @@ static void gen_code(node_t *me) {
         args = me->array->nodes;
         gen_function(args[0], args[1]);
         pop(Function);  fn_level--;
-    } else if (type == Return) {
-        gen_return(me->node);
+    } else if (type == Return || type == '?') {
+        gen_return(type, me->node); // gen_return(type, me->node);
     } else if (type == Continue || type == Break) {
         gen_op0(type); 
     } else if (type == Params) { // params = (param)*

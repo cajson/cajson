@@ -241,9 +241,10 @@ node_t *stmt() {
             r->node = op5(ForTo, nid, from, to, step, s);
         }
     } else if (match("return") || tk.type == '?') { // ?exp = return exp
-        next();
+        token_t optk = next();
         e = expr();
-        r->node = op1(Return, e);
+        int op = (optk.type == '?') ? '?' : Return;
+        r->node = op1(op, e);
     } else if (match("continue")) { // continue
         next();
         r->node = op0(Continue);
