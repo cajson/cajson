@@ -13,6 +13,17 @@ void *pool(int size) {
   return p;
 }
 
+void pool_init() {
+  poolTop = 0;
+  memset(pools, 0, sizeof(pools));
+}
+
+void pool_free() {
+  for (int i=0; i<poolTop; i++) {
+    free(pools[i]);
+  }
+}
+
 // =================== file system ================
 int file_size(FILE *fp) {
     fseek(fp, 0L, SEEK_END);

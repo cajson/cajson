@@ -3,9 +3,8 @@ node_t *block();
 node_t *params();
 
 node_t *base(int type) {
-    token_t t = skip(type);
     node_t *r = node(type);
-    r->sym = t.sym;
+    skip(type);
     return r;
 }
 
@@ -19,6 +18,17 @@ node_t *str() {
 
 node_t *num() {
     return base(Num);
+}
+
+node_t *tk_list(int type, char *end) {
+    node_t *r = node(type);
+    r->list = list();
+    while (tk.type != End && !strchr(end, tk.type)) {
+        list_add(r->list, op0(tk.type));
+        next();
+    }
+    list_reverse(r->list);
+    return r;
 }
 
 node_t *exp_list(int type, char lpair, char rpair) {
@@ -98,7 +108,6 @@ node_t *factor() {
 node_t *map() {
     node_t *r = node(Map);
     r->list = list();
-    // skip_str("map");
     skip('{');
     while (tk.type != '}') {
         node_t *e1 = expr();
@@ -143,22 +152,12 @@ node_t *expr() {
     return r;
 }
 
-// type = ('int|float|str|array|map|object') '*'*
+// type = id**
 node_t *type() {
-    char *types[]={"int", "float", "str", "array", "map", "object"};
-    if (member(types, size(types))) {
-        node_t *r = node(Type);
-        r->list = list();
-        node_t *nid = id();
-        list_add(r->list, nid);
-        while (tk.type == '*') list_add(r->list, op0('*'));
-        list_reverse(r->list);
-        return r;
-    }
-    return NULL;
+    return tk_list(Type, "=),");
 }
 
-// assign = pid(:type)?= expr
+// assign = pid(:type?)?= expr
 node_t *assign() {
     scan_save();
     if (strchr("@$", tk.type) || tk.type == Id) {

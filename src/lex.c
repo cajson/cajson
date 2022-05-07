@@ -1,4 +1,13 @@
-token_t tk;   // current token (目前 token)
+token_t tk, *ptk, tks[NMAX];   // current token (目前 token)
+int tk_top = 0, line = 0;
+char *p, *lp;
+
+token_t tk0, *ptk0;
+char *p0, *lp0;
+int tk_top0, line0;
+
+void scan_save() { tk0 = tk; p0=p; lp0=lp; ptk0 = ptk; tk_top0 = tk_top; line0=line; }
+void scan_restore() { tk = tk0; p=p0; lp=lp0; ptk = ptk0; tk_top = tk_top0; line=line0; }
 
 #define syntax_error() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, (int)(p-lp), __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
 
@@ -21,20 +30,20 @@ void scan() { // 詞彙解析 lexer
       while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_')
           p++;
       tk.type = Id;
-      tk.sym = sym_add(tk.str, p-tk.str);
+      // tk.sym = sym_add(tk.str, p-tk.str);
       break;
     }
     else if (ch >= '0' && ch <= '9') { // 取得數字串
       while ((*p>='0' && *p<='9') || (*p=='.')) p++;
       // sscanf(tk.str, "%lf", &tk_float);
-      tk.sym = sym_add(tk.str, p-tk.str);
+      // tk.sym = sym_add(tk.str, p-tk.str);
       tk.type = Num;
       break;
     }
     else if (ch == '\'') { // 字元或字串
       while (*p != '\'') p++;
       p++;
-      tk.sym = sym_add(tk.str, p-tk.str);
+      // tk.sym = sym_add(tk.str, p-tk.str);
       tk.type = Str;
       break;
     } else if (ch == '/' && *p == '/') { // 註解  //... 
@@ -62,6 +71,8 @@ void scan() { // 詞彙解析 lexer
     }
   }
   tk.len = p-tk.str;
+  ptk = &tks[tk_top++];
+  *ptk = tk;
   printf("%.*s ", tk.len, tk.str);
 }
 
@@ -90,13 +101,9 @@ token_t next() {
 #define skip(t) ({token_t r=tk; if (tk.type==t) next(); else syntax_error(); r; })
 #define skip_str(str) ({token_t r=tk; if (match(str)) next(); else syntax_error(); r; })
 
-token_t tk0; char *p0;
-void scan_save() { tk0 = tk; p0=p; }
-void scan_restore() { tk = tk0; p=p0; }
-
 void lex(char *source) {
     p = source;
-    src = 1;
+    // src = 1;
     next();
     while (true) {
         token_t t = next();

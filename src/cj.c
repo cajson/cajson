@@ -1,7 +1,6 @@
 #include <cj.h>
 #include <lib.c>
 #include <init.c>
-#include <sym.c>
 #include <lex.c>
 #include <ast.c>
 #include <parse.c>
@@ -25,10 +24,10 @@ int main(int argc, char **argv) {
       oFile = *(argv+2);
     }
   }
+  pool_init();
   p = lp = source = file_read(iFile);
-  // read_source(iFile);
   if (o_lex) { lex(source); return 1; }
   node_t *ast = parse(source);
   gen_cj(ast);
-  printf("\n");
+  pool_free();
 }

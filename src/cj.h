@@ -5,13 +5,9 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define NMAX 100000
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
 #define size(x) (sizeof(x)/sizeof(typeof (x)))
-// sym
-typedef struct sym_t {
-    char *name;
-    int len;
-} sym_t;
 
 // lex
 typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
@@ -28,11 +24,11 @@ typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用�
 } id_t;
 
 typedef struct token_t {
-    id_t type;   // token 型態
+    int type;   // token 型態
     int line;   // 所在行號
     char *str;  // token 的字串
     int len;    // token 的字串長度
-    sym_t *sym; // 指向 symbol
+    // sym_t *sym; // 指向 symbol
 } token_t;
 
 // ast
@@ -43,18 +39,13 @@ typedef struct list_t list_t;
 
 struct node_t {
   int type;
-  int line; // 該節點對應原始程式碼的行號
+  int len;
+  token_t *ptk;
   union {
     list_t  *list;
-    sym_t   *sym;
     node_t  *node;
-    array_t *array;
+    node_t  **array;
   };
-};
-
-struct array_t {
-  node_t **nodes;
-  int len;
 };
 
 struct link_t {

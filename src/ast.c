@@ -1,18 +1,16 @@
 node_t *node(int type) {
     node_t *n = pool(sizeof(node_t));
     n->type = type;
-    n->line = line;
-    // printf("line=%d\n", line);
+    n->ptk = ptk;
     return n;
 }
 
-array_t *narray(node_t *nodes[], int len) {
-    array_t *a = pool(sizeof(array_t));
-    a->len = len;
+node_t **narray(node_t *nodes[], int len) {
+    if (len == 0) return NULL;
     int size = sizeof(node_t*)*len;
-    a->nodes = pool(size);
-    memcpy(a->nodes, nodes, size);
-    return a;
+    node_t **array = pool(size);
+    memcpy(array, nodes, size);
+    return array;
 }
 
 link_t *link() {
@@ -23,29 +21,25 @@ list_t *list() {
     return pool(sizeof(list_t));
 }
 
+node_t *op_n(int op, node_t *nodes[], int len) {
+    node_t *n = node(op);
+    n->len = len;
+    n->array = narray(nodes, len);
+    return n;
+}
+
 node_t *op0(int op) {
-    return node(op);
+    return op_n(op, NULL, 0);
 }
 
 node_t *op1(int op, node_t *n1) {
-    node_t *n = node(op);
-    n->node = n1;
-    return n;
-}
-
-node_t *op_n(int op, node_t *nodes[], int len) {
-    node_t *n = node(op);
-    n->array = narray(nodes, len);
-    return n;
+    node_t *a[] = { n1 };
+    return op_n(op, a, 1);
 }
 
 node_t *op2(int op, node_t *n1, node_t *n2) {
     node_t *a[] = { n1, n2 };
     return op_n(op, a, 2);
-}
-
-node_t *pair(node_t *n1, node_t *n2) {
-    return op2(Pair, n1, n2);
 }
 
 node_t *op3(int op, node_t *n1, node_t *n2, node_t *n3) {
@@ -61,6 +55,10 @@ node_t *op4(int op, node_t *n1, node_t *n2, node_t *n3, node_t *n4) {
 node_t *op5(int op, node_t *n1, node_t *n2, node_t *n3, node_t *n4, node_t *n5) {
     node_t *a[] = { n1, n2, n3, n4, n5 };
     return op_n(op, a, 5);
+}
+
+node_t *pair(node_t *n1, node_t *n2) {
+    return op2(Pair, n1, n2);
 }
 
 void list_add(list_t *list, node_t *node) {

@@ -1,10 +1,6 @@
-#define NMAX 100000
 char *iFile, *oFile; 
 int src, debug, o_run, o_dump;
-int line = 1;
-// char data[NMAX], *datap=data;
-char *source, *p, *lp;
-// char target[NMAX], *e=target, *le=target;
+char *source;
 
 char *id_names[] = {
   "op0begin", "continue", "break", "op0end",

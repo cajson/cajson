@@ -10,10 +10,12 @@ stmt = block                     |
        if expr stmt (else stmt)? |
        for id (in|of) expr stmt  |
        for id=expr to expr step expr stmt |
-       return expr               |
+       (return|?) expr               |
        continue                  |
        break                     |
-       (id=)? expr
+       assign
+
+assign = pid(:type)?= expr
 
 expr = item (op2 expr)*
 
@@ -31,9 +33,7 @@ array = [ expr* ]
 
 map = { ((id|Str|Num):expr)* }
 
-params = param*
-
-param = id (:expr)?
+params = assign*
 
 args  = ( expr* )
 
