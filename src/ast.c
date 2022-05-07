@@ -2,6 +2,7 @@ node_t *node(int type) {
     node_t *n = pool(sizeof(node_t));
     n->type = type;
     n->ptk = ptk;
+    n->len = -1;
     return n;
 }
 
@@ -19,6 +20,12 @@ link_t *link() {
 
 list_t *list() {
     return pool(sizeof(list_t));
+}
+
+node_t *tk_node() {
+    node_t *n = node(Token);
+    n->len = 0;
+    return n;
 }
 
 node_t *op_n(int op, node_t *nodes[], int len) {

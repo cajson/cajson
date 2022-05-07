@@ -24,7 +24,7 @@ node_t *tk_list(int type, char *end) {
     node_t *r = node(type);
     r->list = list();
     while (tk.type != End && !strchr(end, tk.type)) {
-        list_add(r->list, op0(tk.type));
+        list_add(r->list, tk_node(Token));
         next();
     }
     list_reverse(r->list);

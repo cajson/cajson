@@ -1,15 +1,15 @@
 #include <gen.c>
 
 static void gen_str(node_t *node) {
-    gen_tk(node);
+    gen_token(node);
 }
 
 static void gen_num(node_t *node) {
-    gen_tk(node);
+    gen_token(node);
 }
 
 static void gen_id(node_t *node) {
-    gen_tk(node);
+    gen_token(node);
 }
 
 static void gen_op0(int op) {

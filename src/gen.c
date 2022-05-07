@@ -51,7 +51,7 @@ static int peek() {
     return stack[top-1];
 }
 
-static void gen_tk(node_t *node) {
+static void gen_token(node_t *node) {
     emit("%.*s", node->ptk->len, node->ptk->str);
 }
 
@@ -119,6 +119,10 @@ static void gen_code(node_t *me) {
         gen_assign(args[0], args[1], args[2]);
     } else if (type == Pair) {
         gen_pair(args[0], args[1]);
+    } else if (type == Token) {
+        gen_token(me);
+    } else if (me->len == 0) { // op0 或 type 中的 * ...
+        gen_op0(type);
     } else if (me->len == 1) { // (is_op1(type)) 不能用，因為 type 中可能出現該運算
         gen_op1(type, args[0]);
     } else if (me->len == 2) { // (is_op2(type)) 不能用，因為 type 中可能出現該運算
