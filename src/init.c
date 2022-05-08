@@ -19,16 +19,14 @@ char* id_name(int op, char *name) {
 }
 
 bool is_op1(int op) {
-  return strchr("!~@$", op) || (op > Op1Begin && op <Op1End);
+  return contain("!~@$", op) || (op > Op1Begin && op <Op1End);
 }
 
 bool is_op2(int op) {
-  return strchr("+-*/%&|^<>", op) || (op > Op2Begin && op <Op2End);
+  return contain("+-*/%&|^<>", op) || (op > Op2Begin && op <Op2End);
 }
 
-void init() {
-  // memset(target, 0, sizeof(target));
-}
+void init() {}
 
 int read_source(char *iFile) {
   FILE *fd;

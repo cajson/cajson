@@ -8,9 +8,10 @@
 #define NMAX 100000
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
 #define size(x) (sizeof(x)/sizeof(typeof (x)))
+#define contain(set, ch) strchr(set, ch)
 
 // lex
-typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用代號。
+enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   None=0,
   Or='|',And='&', Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
@@ -21,7 +22,7 @@ typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用�
   Op1Begin, Neg, Inc, Dec, Return, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
   End,
-} id_t;
+};
 
 typedef struct token_t {
     int tk;     // token 型態
@@ -53,7 +54,7 @@ struct link_t {
 };
 
 struct list_t {
-  int len;
+  // int len;
   link_t *head;
 };
 

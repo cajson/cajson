@@ -23,7 +23,7 @@ node_t *num() {
 node_t *tk_list(int type, char *end) {
     node_t *r = node(type);
     r->list = list();
-    while (tk != End && !strchr(end, tk)) {
+    while (tk != End && !contain(end, tk)) {
         list_add(r->list, tk_node(Token));
         next();
     }
@@ -57,7 +57,7 @@ node_t *array() {
 // pid = (@|$)? id
 node_t *pid() {
     int pre = None;
-    if (strchr("@$", tk))
+    if (contain("@$", tk))
         pre = next().tk;
     node_t *nid = id();
     return (pre==None)?nid:op1(pre, nid);
@@ -68,7 +68,7 @@ node_t *term() {
     node_t *r = node(Term);
     r->list = list();
     list_add(r->list, pid());
-    while (strchr("[.(", tk)) {
+    while (contain("[.(", tk)) {
         if (tk == '[') { // array member
             next();
             node_t *e=expr();
@@ -88,7 +88,7 @@ node_t *term() {
 
 // factor = (!-~) (factor) | Num | (expr) | term
 node_t *factor() {
-    if (strchr("!-~", tk)) {
+    if (contain("!-~", tk)) {
         int op = (tk=='-')?Neg:tk;
         next();
         return op1(op, factor());
@@ -160,7 +160,7 @@ node_t *type() {
 // assign = pid(:type?)?= expr
 node_t *assign() {
     scan_save();
-    if (strchr("@$", tk) || tk == Id) {
+    if (contain("@$", tk) || tk == Id) {
         node_t *nid = pid(), *t = NULL, *e = NULL;
         if (tk == ':') {
             next();
@@ -170,7 +170,7 @@ node_t *assign() {
             next();
             e = expr();
         }
-        if (e /*=expr*/ || strchr(",)", tk) /*params*/)
+        if (e /*=expr*/ || contain(",)", tk) /*params*/)
             return op3(Assign, nid, t, e);
     }
     scan_restore();

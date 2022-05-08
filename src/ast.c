@@ -73,7 +73,6 @@ void list_add(list_t *list, node_t *node) {
     link->node = node;
     link->next = list->head;
     list->head = link;
-    list->len ++;
 }
 
 // ref: https://www.geeksforgeeks.org/reverse-a-linked-list/
