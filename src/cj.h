@@ -24,11 +24,10 @@ typedef enum id_t { // token : 0-127 直接用該字母表達， 128 以後用�
 } id_t;
 
 typedef struct token_t {
-    int type;   // token 型態
+    int tk;     // token 型態
     int line;   // 所在行號
     char *str;  // token 的字串
     int len;    // token 的字串長度
-    // sym_t *sym; // 指向 symbol
 } token_t;
 
 // ast

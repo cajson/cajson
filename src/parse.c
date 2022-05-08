@@ -23,7 +23,7 @@ node_t *num() {
 node_t *tk_list(int type, char *end) {
     node_t *r = node(type);
     r->list = list();
-    while (tk.type != End && !strchr(end, tk.type)) {
+    while (tk != End && !strchr(end, tk)) {
         list_add(r->list, tk_node(Token));
         next();
     }
@@ -35,9 +35,9 @@ node_t *exp_list(int type, char lpair, char rpair) {
     node_t *r = node(type);
     r->list = list();
     skip(lpair);
-    while (tk.type != rpair) {
+    while (tk != rpair) {
         list_add(r->list, expr());
-        if (tk.type == ',') next();
+        if (tk == ',') next();
     }
     skip(rpair);
     list_reverse(r->list);
@@ -57,8 +57,8 @@ node_t *array() {
 // pid = (@|$)? id
 node_t *pid() {
     int pre = None;
-    if (strchr("@$", tk.type))
-        pre = next().type;
+    if (strchr("@$", tk))
+        pre = next().tk;
     node_t *nid = id();
     return (pre==None)?nid:op1(pre, nid);
 }
@@ -68,17 +68,17 @@ node_t *term() {
     node_t *r = node(Term);
     r->list = list();
     list_add(r->list, pid());
-    while (strchr("[.(", tk.type)) {
-        if (tk.type == '[') { // array member
+    while (strchr("[.(", tk)) {
+        if (tk == '[') { // array member
             next();
             node_t *e=expr();
             skip(']');
             list_add(r->list, op1('[', e));
-        } else if (tk.type == '.') { // object member
+        } else if (tk == '.') { // object member
             next();
             node_t *mid = id();
             list_add(r->list, op1('.', mid));
-        } else if (tk.type == '(') { // function call
+        } else if (tk == '(') { // function call
             list_add(r->list, args());
         }
     }
@@ -88,13 +88,13 @@ node_t *term() {
 
 // factor = (!-~) (factor) | Num | (expr) | term
 node_t *factor() {
-    if (strchr("!-~", tk.type)) {
-        int op = (tk.type=='-')?Neg:tk.type;
+    if (strchr("!-~", tk)) {
+        int op = (tk=='-')?Neg:tk;
         next();
         return op1(op, factor());
-    } else if (tk.type == Num) {
+    } else if (tk == Num) {
         return num();
-    } else if (tk.type == '(') { // ( expr )
+    } else if (tk == '(') { // ( expr )
         skip('(');
         node_t *e = expr();
         skip(')');
@@ -109,12 +109,12 @@ node_t *map() {
     node_t *r = node(Map);
     r->list = list();
     skip('{');
-    while (tk.type != '}') {
+    while (tk != '}') {
         node_t *e1 = expr();
         skip(':');
         node_t *e2 = expr();
         list_add(r->list, pair(e1, e2));
-        if (tk.type == ',') next();
+        if (tk == ',') next();
     }
     skip('}');
     list_reverse(r->list);
@@ -123,7 +123,7 @@ node_t *map() {
 
 // item = Str | fn | array | map | factor
 node_t *item() {
-    if (tk.type == Str) {
+    if (tk == Str) {
         return str();
     } else if (match("fn")) { // fn (params) block
         next();
@@ -132,9 +132,9 @@ node_t *item() {
         skip(')');
         node_t *b1 = block();
         return op2(Function, p1, b1);
-    } else if (tk.type == '{') { // if (match("map")) { // map
+    } else if (tk == '{') { // if (match("map")) { // map
         return map();
-    } else if (tk.type == '[') { // array
+    } else if (tk == '[') { // array
         return array();
     } else {
         return factor();
@@ -144,10 +144,10 @@ node_t *item() {
 // expr = item (op2 expr)?
 node_t *expr() {
     node_t *r = item();
-    if (is_op2(tk.type)) {
+    if (is_op2(tk)) {
         token_t op = next();
         node_t *e = expr();
-        r = op2(op.type, r, e);
+        r = op2(op.tk, r, e);
     }
     return r;
 }
@@ -160,17 +160,17 @@ node_t *type() {
 // assign = pid(:type?)?= expr
 node_t *assign() {
     scan_save();
-    if (strchr("@$", tk.type) || tk.type == Id) {
+    if (strchr("@$", tk) || tk == Id) {
         node_t *nid = pid(), *t = NULL, *e = NULL;
-        if (tk.type == ':') {
+        if (tk == ':') {
             next();
             t = type();
         }
-        if (tk.type=='=') {
+        if (tk=='=') {
             next();
             e = expr();
         }
-        if (e /*=expr*/ || strchr(",)", tk.type) /*params*/)
+        if (e /*=expr*/ || strchr(",)", tk) /*params*/)
             return op3(Assign, nid, t, e);
     }
     scan_restore();
@@ -181,9 +181,9 @@ node_t *assign() {
 node_t *params() {
     node_t *r = node(Params);
     r->list = list();
-    while (tk.type != ')') { 
+    while (tk != ')') { 
         list_add(r->list, assign());
-        if (tk.type == ',') next();
+        if (tk == ',') next();
     }
     list_reverse(r->list);
     return r;
@@ -200,7 +200,7 @@ node_t *params() {
 //        assign
 node_t *stmt() {
     node_t *e, *s, *r=node(Stmt);
-    if (tk.type == '{') { // block
+    if (tk == '{') { // block
         return block();
     } else if (match("while")) { // while expr stmt
         next();
@@ -239,10 +239,10 @@ node_t *stmt() {
             s = stmt();
             r->node = op5(ForTo, nid, from, to, step, s);
         }
-    } else if (match("return") || tk.type == '?') { // ?exp = return exp
+    } else if (match("return") || tk == '?') { // ?exp = return exp
         token_t optk = next();
         e = expr();
-        int op = (optk.type == '?') ? '?' : Return;
+        int op = (optk.tk == '?') ? '?' : Return;
         r->node = op1(op, e);
     } else if (match("continue")) { // continue
         next();
@@ -261,7 +261,7 @@ node_t *stmt() {
 node_t *stmts() {
     node_t *r = node(Stmts);
     r->list = list();
-    while (tk.type != End && tk.type != '}') {
+    while (tk != End && tk != '}') {
         list_add(r->list, stmt());
     }
     list_reverse(r->list);

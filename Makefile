@@ -11,7 +11,6 @@ run: $(OBJS)
 	./cj prog/hello.cj
 	./cj prog/fn.cj
 	./cj prog/matrix.cj
-	./cj prog/array.cj
 	./cj prog/for.cj
 	./cj prog/comment.cj
 	./cj prog/exp1.cj
@@ -21,6 +20,8 @@ run: $(OBJS)
 	./cj prog/stmt1.cj
 	./cj prog/sum.cj
 	./cj prog/sum2.cj
+	./cj prog/array.cj
+	./cj prog/array2.cj
 
 test: $(OBJS)
 	./cj prog/exp1.cj

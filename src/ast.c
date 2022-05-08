@@ -1,7 +1,7 @@
 node_t *node(int type) {
     node_t *n = pool(sizeof(node_t));
     n->type = type;
-    n->ptk = ptk;
+    n->ptk = ptoken;
     n->len = -1;
     return n;
 }

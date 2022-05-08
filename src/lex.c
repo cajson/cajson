@@ -1,21 +1,21 @@
-token_t tk, *ptk, tks[NMAX];   // current token (目前 token)
-int tk_top = 0, line = 0;
+token_t token, *ptoken, tokens[NMAX];   // current token (目前 token)
+int tk, tk_top = 0, line = 0;
 char *p, *lp;
 
-token_t tk0, *ptk0;
+token_t token0, *ptoken0;
 char *p0, *lp0;
-int tk_top0, line0;
+int tk0, tk_top0, line0;
 
-void scan_save() { tk0 = tk; p0=p; lp0=lp; ptk0 = ptk; tk_top0 = tk_top; line0=line; }
-void scan_restore() { tk = tk0; p=p0; lp=lp0; ptk = ptk0; tk_top = tk_top0; line=line0; }
+void scan_save() { tk0 = tk; token0 = token; p0=p; lp0=lp; ptoken0 = ptoken; tk_top0 = tk_top; line0=line; }
+void scan_restore() { tk = tk0; token = token0; p=p0; lp=lp0; ptoken = ptoken0; tk_top = tk_top0; line=line0; }
 
-#define syntax_error() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, (int)(p-lp), __FILE__, __LINE__, tk.type, (char)tk.type, tk.len, tk.str); exit(1); }
+#define syntax_error() { printf("Error at line=%d, pos=%d. C halt at file=%s line=%d, tk=%d(%c) %.*s\n", line, (int)(p-lp), __FILE__, __LINE__, tk, (char)tk, token.len, token.str); exit(1); }
 
 void scan() { // 詞彙解析 lexer
-  tk.type = End;
+  tk = End;
   while (*p) {
-    tk.str = p;
-    tk.line = line;
+    token.str = p;
+    token.line = line;
     char ch = *p++;
     if (ch == '\n') { // 換行
       if (src) {
@@ -29,22 +29,18 @@ void scan() { // 詞彙解析 lexer
     else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_') { // 取得變數名稱
       while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_')
           p++;
-      tk.type = Id;
-      // tk.sym = sym_add(tk.str, p-tk.str);
+      tk = Id;
       break;
     }
     else if (ch >= '0' && ch <= '9') { // 取得數字串
       while ((*p>='0' && *p<='9') || (*p=='.')) p++;
-      // sscanf(tk.str, "%lf", &tk_float);
-      // tk.sym = sym_add(tk.str, p-tk.str);
-      tk.type = Num;
+      tk = Num;
       break;
     }
     else if (ch == '\'') { // 字元或字串
       while (*p != '\'') p++;
       p++;
-      // tk.sym = sym_add(tk.str, p-tk.str);
-      tk.type = Str;
+      tk = Str;
       break;
     } else if (ch == '/' && *p == '/') { // 註解  //... 
         ++p;
@@ -58,22 +54,23 @@ void scan() { // 詞彙解析 lexer
         p+=2;
     } else if (strchr(" \n\r\t;", ch)) { // 忽略空格與逗點分號，繼續往前讀...
     } else { // 以下為運算元 =+-!<>|&^%*[?~, ++, --, !=, <=, >=, ||, &&, ~  ;{}()],:
-      tk.type = ch;
-      if (ch == '=') { if (*p == '=') { ++p; tk.type = Eq; } break; }
-      else if (ch == '+') { if (*p == '+') { ++p; tk.type = Inc; } break; }
-      else if (ch == '-') { if (*p == '-') { ++p; tk.type = Dec; } break; }
-      else if (ch == '!') { if (*p == '=') { ++p; tk.type = Neq; } break; }
-      else if (ch == '<') { if (*p == '=') { ++p; tk.type = Le; } else if (*p == '<') { ++p; tk.type = Shl; } break; }
-      else if (ch == '>') { if (*p == '=') { ++p; tk.type = Ge; } else if (*p == '>') { ++p; tk.type = Shr; } break; }
-      else if (ch == '|') { if (*p == '|') { ++p; tk.type = Lor; } else break; }
-      else if (ch == '&') { if (*p == '&') { ++p; tk.type = Land; } else break; }
+      tk = ch;
+      if (ch == '=') { if (*p == '=') { ++p; tk = Eq; } break; }
+      else if (ch == '+') { if (*p == '+') { ++p; tk = Inc; } break; }
+      else if (ch == '-') { if (*p == '-') { ++p; tk = Dec; } break; }
+      else if (ch == '!') { if (*p == '=') { ++p; tk = Neq; } break; }
+      else if (ch == '<') { if (*p == '=') { ++p; tk = Le; } else if (*p == '<') { ++p; tk = Shl; } break; }
+      else if (ch == '>') { if (*p == '=') { ++p; tk = Ge; } else if (*p == '>') { ++p; tk = Shr; } break; }
+      else if (ch == '|') { if (*p == '|') { ++p; tk = Lor; } else break; }
+      else if (ch == '&') { if (*p == '&') { ++p; tk = Land; } else break; }
       else { break; } // 其他字元，單一個字即 token
     }
   }
-  tk.len = p-tk.str;
-  ptk = &tks[tk_top++];
-  *ptk = tk;
-  printf("%.*s ", tk.len, tk.str);
+  token.tk = tk;
+  token.len = p-token.str;
+  ptoken = &tokens[tk_top++];
+  *ptoken = token;
+  printf("%.*s ", token.len, token.str);
 }
 
 bool tk_match(token_t t, char *str) {
@@ -82,7 +79,7 @@ bool tk_match(token_t t, char *str) {
 }
 
 bool match(char *str) {
-    return tk_match(tk, str);
+    return tk_match(token, str);
 }
 
 bool member(char *a[], int len) {
@@ -93,13 +90,13 @@ bool member(char *a[], int len) {
 }
 
 token_t next() {
-  token_t r=tk; 
+  token_t r=token; 
   scan();
   return r;
 }
 
-#define skip(t) ({token_t r=tk; if (tk.type==t) next(); else syntax_error(); r; })
-#define skip_str(str) ({token_t r=tk; if (match(str)) next(); else syntax_error(); r; })
+#define skip(t) ({token_t r=token; if (tk==t) next(); else syntax_error(); r; })
+#define skip_str(str) ({token_t r=token; if (match(str)) next(); else syntax_error(); r; })
 
 void lex(char *source) {
     p = source;
@@ -107,7 +104,7 @@ void lex(char *source) {
     next();
     while (true) {
         token_t t = next();
-        if (t.type == End) break;
+        if (t.tk == End) break;
         printf("%d: %.*s\n", t.line, t.len, t.str);
     }
 }
