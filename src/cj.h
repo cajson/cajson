@@ -58,8 +58,13 @@ struct list_t {
   link_t *head;
 };
 
+char *ifile, *ofile;
+FILE *ofp;
+
 // API
-int read_source(char *iFile);
+char* id_name(int op, char *name);
+int read_source(char *file);
 void lex(char *source);
 node_t *parse(char *source);
 void gen_cj(node_t *root);
+void gen_js(node_t *root);

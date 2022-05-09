@@ -21,12 +21,15 @@ static void gen_term(node_t *pid, link_t *head) {
 
 // assign = pid(:type?)?= expr
 static void gen_assign(node_t *pid, node_t *type, node_t *exp) {
+    if (type) emit("let ");
     gen_code(pid);
+    /*
     if (type) {
         emit(":");
         if (type->list != NULL)
             gen_list(type->list->head, "");
     }
+    */
     if (exp) {
         emit("=");
         gen_code(exp);
@@ -35,36 +38,42 @@ static void gen_assign(node_t *pid, node_t *type, node_t *exp) {
 
 // (return|?) expr
 static void gen_return(int op, node_t *exp) {
-    char name[20];
-    id_name(op, name);
-    emit("%s ", name);
+    emit("return ");
     gen_code(exp);
 }
 
 // for id=expr to expr (step expr) stmt
 static void gen_for_to(node_t *id, node_t *from, node_t *to, node_t *step, node_t *stmt) {
-    emit("for ");
+    emit("for (let ");
     gen_code(id);
     emit("=");
     gen_code(from);
-    emit(" to ");
+    emit(";");
+    gen_code(id);
+    emit("<=");
     gen_code(to);
-    if (step != NULL) {
-        emit(" step ");
+    emit(";")
+    gen_code(id);
+    if (step) {
+        emit("+=");
         gen_code(step);
+    } else {
+        emit("++");
     }
+    emit(")");
     gen_code(stmt);
 }
 
 // function = fn (params) block
 static void gen_function(node_t *params, node_t *block) {
-    emit("fn");
+    emit("function");
     gen_code(params);
     gen_code(block);
 }
 
-void gen_cj(node_t *root) {
+void gen_js(node_t *root) {
     emit("// source file: %s\n", ifile);
+    emit("import { print } from '../sys/cj.js'")
     gen_code(root);
     emit("\n");
 }

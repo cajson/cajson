@@ -1,7 +1,9 @@
-token_t token, *ptoken, tokens[NMAX];   // current token (目前 token)
+token_t tokens[NMAX];
+token_t token, *ptoken;   // current token (目前 token)
 int tk, tk_top = 0, line = 0;
 char *p, *lp;
 
+// store the folowing variable for restore
 token_t token0, *ptoken0;
 char *p0, *lp0;
 int tk0, tk_top0, line0;

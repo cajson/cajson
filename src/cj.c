@@ -4,7 +4,6 @@
 #include <lex.c>
 #include <ast.c>
 #include <parse.c>
-#include <gen_cj.c>
 
 int main(int argc, char **argv) {
   char *narg;
@@ -17,17 +16,23 @@ int main(int argc, char **argv) {
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'r') { o_run = 1; --argc; ++argv; }
   if (argc > 0 && **argv == '-' && (*argv)[1] == 'u') { o_dump = 1; --argc; ++argv; }
   if (argc < 1) { printf("usage: cj [-s] [-d] [-r] [-u] in_file [-o] out_file...\n"); return -1; }
-  iFile = *argv;
+  ifile = *argv;
   if (argc > 1) {
     narg = *(argv+1);
     if (*narg == '-' && narg[1] == 'o') {
-      oFile = *(argv+2);
+      ofile = *(argv+2);
     }
   }
   pool_init();
-  p = lp = source = file_read(iFile);
+  p = lp = source = file_read(ifile);
   if (o_lex) { lex(source); return 1; }
   node_t *ast = parse(source);
-  gen_cj(ast);
+  // gen_cj(ast);
+  if (ofile) ofp = fopen(ofile, "w"); else ofp = stdout;
+  // ofp = stdout;
+  if (!ofile) {}
+  else if (ends_with(ofile, "cj")) gen_cj(ast);
+  else if (ends_with(ofile, "js")) gen_js(ast);
+  else error("%s: file type not supported!\n", ofile);
   pool_free();
 }

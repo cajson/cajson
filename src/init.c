@@ -1,4 +1,4 @@
-char *iFile, *oFile; 
+char *ifile=NULL, *ofile=NULL;
 int src, debug, o_run, o_dump;
 char *source;
 
@@ -26,13 +26,10 @@ bool is_op2(int op) {
   return contain("+-*/%&|^<>", op) || (op > Op2Begin && op <Op2End);
 }
 
-void init() {}
-
-int read_source(char *iFile) {
+int read_source(char *file) {
   FILE *fd;
-  init();
-  if (!(fd = fopen(iFile, "r"))) {
-    printf("could not open(%s)\n", iFile);
+  if (!(fd = fopen(file, "r"))) {
+    printf("could not open(%s)\n", file);
     return -1;
   }
   int len = fread(source, 1, sizeof(source), fd);

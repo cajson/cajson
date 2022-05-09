@@ -1,10 +1,12 @@
+#include "cj.h"
+
 static int stack[1000];
 static int top = 0;
 static int block_level = 0;
 static int fn_level = 0;
 static bool show_line = true;
 
-#define emit(...) { printf(__VA_ARGS__); }
+#define emit(...) { printf(__VA_ARGS__); if (ofp) fprintf(ofp, __VA_ARGS__); }
 #define line(i) if (show_line) emit("/* %-3d*/\t", i);
 
 static void gen_str(node_t *node);
@@ -14,7 +16,6 @@ static void gen_op0(int op);
 static void gen_op1(int op, node_t *node);
 static void gen_op2(node_t *node1, int op, node_t *node2);
 static void gen_term(node_t *pid, link_t *head);
-// static void gen_param(node_t *id, node_t *exp);
 static void gen_params(link_t *head);
 static void gen_array(link_t *head);
 static void gen_pair(node_t *n1, node_t *n2);
@@ -34,7 +35,7 @@ static void gen_stmt(node_t *stmt);
 static void gen_code(node_t *me);
 
 static void indent(int level) {
-    printf("%*s", level*2, "");
+    emit("%*s", level*2, "");
 }
 
 static void push(int type) {

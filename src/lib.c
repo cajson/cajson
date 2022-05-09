@@ -41,3 +41,8 @@ char *file_read(char *fname) {
     fclose(fp);
     return buf;
 }
+
+bool ends_with( char *str, char *end) {
+  char *p = str+strlen(str)-strlen(end);
+  return strcmp(p, end)==0;
+}

@@ -162,9 +162,9 @@ node_t *assign() {
     scan_save();
     if (contain("@$", tk) || tk == Id) {
         node_t *nid = pid(), *t = NULL, *e = NULL;
-        if (tk == ':') {
+        if (tk == ':') { // 如果沒有 : ，會傳回 NULL
             next();
-            t = type();
+            t = type(); // 如果是空的，會傳回 node with empty list
         }
         if (tk=='=') {
             next();
@@ -220,6 +220,7 @@ node_t *stmt() {
     } else if (match("for")) { // for id in expr stmt
         next();
         node_t *nid = id();
+        if (tk == ':') next();
         if (match("in") || match("of")) {
             token_t optk = next();
             int op = (tk_match(optk, "in"))?ForIn:ForOf;
