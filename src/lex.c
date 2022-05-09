@@ -72,7 +72,7 @@ void scan() { // 詞彙解析 lexer
   token.len = p-token.str;
   ptoken = &tokens[tk_top++];
   *ptoken = token;
-  printf("%.*s ", token.len, token.str);
+  debug("%.*s ", token.len, token.str);
 }
 
 bool tk_match(token_t t, char *str) {

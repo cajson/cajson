@@ -6,7 +6,7 @@ static int block_level = 0;
 static int fn_level = 0;
 static bool show_line = true;
 
-#define emit(...) { printf(__VA_ARGS__); if (ofp) fprintf(ofp, __VA_ARGS__); }
+#define emit(...) { debug(__VA_ARGS__); if (ofp) fprintf(ofp, __VA_ARGS__); }
 #define line(i) if (show_line) emit("/* %-3d*/\t", i);
 
 static void gen_str(node_t *node);

@@ -1,3 +1,4 @@
+set -x
 ./run.sh hello
 ./run.sh while
 ./run.sh sum

@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+// #define debug(...) printf(__VA_ARGS__)
+#define debug(...) 
 #define NMAX 100000
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
 #define size(x) (sizeof(x)/sizeof(typeof (x)))
