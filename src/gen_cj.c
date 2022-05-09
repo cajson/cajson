@@ -41,11 +41,37 @@ static void gen_return(int op, node_t *exp) {
     gen_code(exp);
 }
 
-// for id=expr to expr (step expr) stmt
+// params = assign*
+static void gen_params(link_t *head) {
+    emit("(");
+    gen_list(head, ",");
+    emit(")");
+}
+
+// for id op expr stmt
+static void gen_for3(char *op, node_t *id, node_t *exp, node_t *stmt) {
+    emit("for ");
+    gen_code(id);
+    emit("%s", op);
+    gen_code(exp);
+    gen_code(stmt);
+}
+
+// for id in expr stmt
+static void gen_for_in(node_t *id, node_t *exp, node_t *stmt) {
+    gen_for3(" in ", id, exp, stmt);
+}
+
+// for id of expr stmt
+static void gen_for_of(node_t *id, node_t *exp, node_t *stmt) {
+    gen_for3(" of ", id, exp, stmt);
+}
+
+// for id:=expr to expr (step expr) stmt
 static void gen_for_to(node_t *id, node_t *from, node_t *to, node_t *step, node_t *stmt) {
     emit("for ");
     gen_code(id);
-    emit("=");
+    emit(":=");
     gen_code(from);
     emit(" to ");
     gen_code(to);

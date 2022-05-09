@@ -1,2 +1,2 @@
-name='ccc'
+name:='ccc'
 print('hello', name)

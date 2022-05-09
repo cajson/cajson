@@ -23,23 +23,46 @@ static void gen_term(node_t *pid, link_t *head) {
 static void gen_assign(node_t *pid, node_t *type, node_t *exp) {
     if (type) emit("let ");
     gen_code(pid);
-    /*
-    if (type) {
-        emit(":");
-        if (type->list != NULL)
-            gen_list(type->list->head, "");
-    }
-    */
     if (exp) {
         emit("=");
         gen_code(exp);
     }
 }
 
+// params = assign*
+static void gen_params(link_t *head) {
+    emit("(");
+    for (link_t *p = head; p != NULL; p = p->next) {
+        gen_code(p->node->array[0]); // id 
+        if (p->next != NULL) emit(",");
+    }
+    emit(")");
+}
+
 // (return|?) expr
 static void gen_return(int op, node_t *exp) {
     emit("return ");
     gen_code(exp);
+}
+
+// for id op expr stmt
+static void gen_for3(char *op, node_t *id, node_t *exp, node_t *stmt) {
+    emit("for (let ");
+    gen_code(id);
+    emit("%s", op);
+    gen_code(exp);
+    emit(")");
+    gen_code(stmt);
+}
+
+// for id in expr stmt
+static void gen_for_in(node_t *id, node_t *exp, node_t *stmt) {
+    gen_for3(" in ", id, exp, stmt);
+}
+
+// for id of expr stmt
+static void gen_for_of(node_t *id, node_t *exp, node_t *stmt) {
+    gen_for3(" of ", id, exp, stmt);
 }
 
 // for id=expr to expr (step expr) stmt

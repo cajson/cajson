@@ -42,14 +42,6 @@ static void gen_array(link_t *head) {
     emit("]");
 }
 
-
-// params = assign*
-static void gen_params(link_t *head) {
-    emit("(");
-    gen_list(head, ",");
-    emit(")");
-}
-
 // args = ( expr* )
 static void gen_args(link_t *head) {
     emit("(");
@@ -88,26 +80,6 @@ static void gen_if(node_t *exp, node_t *stmt1, node_t *stmt2) {
 }
 
 
-// for id op expr stmt
-static void gen_for3(char *op, node_t *id, node_t *exp, node_t *stmt) {
-    emit("for ");
-    gen_code(id);
-    emit("%s", op);
-    gen_code(exp);
-    gen_code(stmt);
-}
-
-// for id in expr stmt
-static void gen_for_in(node_t *id, node_t *exp, node_t *stmt) {
-    gen_for3(" in ", id, exp, stmt);
-}
-
-// for id of expr stmt
-static void gen_for_of(node_t *id, node_t *exp, node_t *stmt) {
-    gen_for3(" of ", id, exp, stmt);
-}
-
-
 // stmt
 static void gen_stmt(node_t *stmt) {
     if (top == 0 || peek() == Block) {
@@ -118,6 +90,7 @@ static void gen_stmt(node_t *stmt) {
         emit(" ");
     }
     gen_code(stmt->node);
+    emit(";");
 }
 
 // stmts = stmt*

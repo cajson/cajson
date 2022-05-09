@@ -220,15 +220,16 @@ node_t *stmt() {
     } else if (match("for")) { // for id in expr stmt
         next();
         node_t *nid = id();
-        if (tk == ':') next();
+        // if (tk == ':') next();
         if (match("in") || match("of")) {
             token_t optk = next();
             int op = (tk_match(optk, "in"))?ForIn:ForOf;
             e = expr();
             s = stmt();
             r->node = op3(op, nid, e, s);
-        } else if (match("=")) {
-            next();
+        } else if (match(":")) {
+            skip(':');
+            skip('=');
             node_t *step=NULL, *from, *to;
             from = expr();
             skip_str("to");
