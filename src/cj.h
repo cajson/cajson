@@ -19,9 +19,9 @@ enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   AsciiEnd=128, 
   Id, Num, Str, Function, Array, Map, Pair, Block, Args, Params, Param, 
   If, While, ForIn, ForOf, ForTo, 
-  Stmts, Stmt, Expr, Item, Term, Assign, Type, Token,
+  Stmts, Stmt, Expr, Item, Term, Assign, Type, Token, Pid,
   Op0Begin=200, Continue, Break, Op0End,
-  Op1Begin, Neg, Inc, Dec, Return, Op1End, 
+  Op1Begin, Neg, Inc, Dec, Return, Global, This, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
   End,
 };

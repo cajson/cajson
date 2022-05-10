@@ -1,5 +1,5 @@
 // source file: prog/if.cj
-import { print } from '../sys/cj.js'
+import '../sys/cj.js'
 /* 0  */	let max=function(x,y)
 /* 0  */	{
 /* 0  */	  if (x>y) return x; else return y;;

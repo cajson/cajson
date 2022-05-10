@@ -33,9 +33,9 @@ array = [ expr* ]
 
 map = { ((id|Str|Num):expr)* }
 
-params = assign*
+params = (assign ','?)*
 
-args  = ( expr* )
+args  = ( expr* ','? )
 
 num : integer | float
 str : '...'

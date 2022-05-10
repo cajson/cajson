@@ -16,6 +16,7 @@ static void gen_op0(int op);
 static void gen_op1(int op, node_t *node);
 static void gen_op2(node_t *node1, int op, node_t *node2);
 static void gen_term(node_t *pid, link_t *head);
+static void gen_pid(node_t *pid);
 static void gen_params(link_t *head);
 static void gen_array(link_t *head);
 static void gen_pair(node_t *n1, node_t *n2);
@@ -112,10 +113,12 @@ static void gen_code(node_t *me) {
         gen_map(me->list->head);
     } else if (type == Args) { // args  = ( expr* )
         gen_args(me->list->head);
-    } else if (type == Term) { // term =  id ([expr] | . id | args )*
+    } else if (type == Term) { // term =  pid ([expr] | . id | args )*
         link_t *head = me->list->head;
         node_t *id = head->node;
         gen_term(id, head->next);
+    } else if (type == Pid) { // pid = (@|$)? id
+        gen_pid(me);
     } else if (type==Assign) {
         gen_assign(args[0], args[1], args[2]);
     } else if (type == Pair) {

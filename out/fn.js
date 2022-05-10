@@ -1,5 +1,5 @@
 // source file: prog/fn.cj
-import { print } from '../sys/cj.js'
+import '../sys/cj.js'
 /* 0  */	let inc=function(x)
 /* 0  */	{
 /* 0  */	  return (x+1);

@@ -56,11 +56,13 @@ node_t *array() {
 
 // pid = (@|$)? id
 node_t *pid() {
+    node_t *r = node(Pid);
     int pre = None;
-    if (contain("@$", tk))
-        pre = next().tk;
+    if (tk == '@') { pre = Global; next(); }
+    else if (tk == '$') { pre = This; next(); }
     node_t *nid = id();
-    return (pre==None)?nid:op1(pre, nid);
+    r->node = op1(pre, nid);
+    return r;
 }
 
 // term = pid ( [expr] | . id | args )*
@@ -104,7 +106,7 @@ node_t *factor() {
     }
 }
 
-// map = 'map' { (expr:expr)* }
+// map = { (expr:expr)* }
 node_t *map() {
     node_t *r = node(Map);
     r->list = list();

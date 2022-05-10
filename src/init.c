@@ -4,7 +4,7 @@ char *source;
 
 char *id_names[] = {
   "op0begin", "continue", "break", "op0end",
-  "op1begin", "-", "++", "--", "return", "op1end",
+  "op1begin", "-", "++", "--", "return", "global.", "this.", "op1end",
   "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
 };
 

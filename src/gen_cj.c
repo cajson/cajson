@@ -1,5 +1,16 @@
 #include <gen_j.c>
 
+// pid = (@|$)? id
+static void gen_pid(node_t *pid) {
+    node_t *n = pid->node;
+    if (n->type == Global) {
+        emit("@");
+    } else if (n->type == This) {
+        emit("$");
+    }
+    gen_code(n->array[0]);
+}
+
 // term = (@|$)? id ( [expr] | . id | args )*      // pid=(@|$)? id
 static void gen_term(node_t *pid, link_t *head) {
     link_t *p;

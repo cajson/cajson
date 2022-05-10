@@ -12,8 +12,7 @@ run: $(OBJS)
 	deno run out/sum.js
 
 test: $(OBJS)
-	./cj2x_test.sh cj
-	./cj2x_test.sh js
+	./cj2js.sh
 
 clean:
 	rm -f $(OBJS)

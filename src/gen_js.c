@@ -1,6 +1,17 @@
 #include <gen_j.c>
 
-// term = (@|$)? id ( [expr] | . id | args )*      // pid=(@|$)? id
+// pid = (@|$)? id
+static void gen_pid(node_t *pid) {
+    node_t *n = pid->node;
+    if (n->type == Global) {
+        emit("global.");
+    } else if (n->type == This) {
+        emit("this.");
+    }
+    gen_code(n->array[0]);
+}
+
+// term = pid ( [expr] | . id | args )*      // pid=(@|$)? id
 static void gen_term(node_t *pid, link_t *head) {
     link_t *p;
     gen_code(pid);
@@ -96,7 +107,7 @@ static void gen_function(node_t *params, node_t *block) {
 
 void gen_js(node_t *root) {
     emit("// source file: %s\n", ifile);
-    emit("import { print } from '../sys/cj.js'")
+    emit("import '../sys/cj.js'")
     gen_code(root);
     emit("\n");
 }

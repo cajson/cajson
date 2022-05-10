@@ -1,5 +1,5 @@
 // source file: prog/while.cj
-import { print } from '../sys/cj.js'
+import '../sys/cj.js'
 /* 0  */	let sum=function(n)
 /* 0  */	{
 /* 1  */	  let i=1;

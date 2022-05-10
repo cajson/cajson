@@ -1,5 +1,5 @@
 // source file: prog/mt.cj
-import { print } from '../sys/cj.js'
+import '../sys/cj.js'
 /* 0  */	let e2c={dog:'狗',cat:'貓',a:'一隻',the:'這隻',chase:'追',bite:'吃'};
 /* 2  */	let translate=function(ewords)
 /* 0  */	{

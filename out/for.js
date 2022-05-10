@@ -1,5 +1,5 @@
 // source file: prog/for.cj
-import { print } from '../sys/cj.js'
+import '../sys/cj.js'
 /* 0  */	let a=[5,4,3,2,1];
 /* 2  */	for (let i in a) print(a[i]);;
 /* 4  */	for (let o of a) print(o);;

@@ -8,3 +8,6 @@ set -x
 ./run.sh array
 ./run.sh matrix
 ./run.sh mt
+./run.sh global
+./run.sh obj
+

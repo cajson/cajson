@@ -1,4 +1,4 @@
-import {print} from './cj.js'
+import './cj.js'
 
 let name="ccc"
 print("hello", name)

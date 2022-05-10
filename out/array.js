@@ -1,5 +1,5 @@
 // source file: prog/array.cj
-import { print } from '../sys/cj.js'
+import '../sys/cj.js'
 /* 0  */	let mean=function(a)
 /* 0  */	{
 /* 1  */	  let s=0;
