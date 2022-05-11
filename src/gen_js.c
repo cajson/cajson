@@ -1,5 +1,12 @@
 #include <gen_j.c>
 
+static void gen_import(node_t *name1, node_t *id2) {
+    emit("import * as ");
+    gen_code(id2);
+    emit(" from ");
+    gen_code(name1);
+}
+
 // pid = (@|$)? id
 static void gen_pid(node_t *pid) {
     node_t *n = pid->node;
@@ -98,9 +105,10 @@ static void gen_for_to(node_t *id, node_t *from, node_t *to, node_t *step, node_
     gen_code(stmt);
 }
 
-// function = fn (params) block
-static void gen_function(node_t *params, node_t *block) {
-    emit("function");
+// function = fn id?(params) block
+static void gen_function(node_t *id, node_t *params, node_t *block) {
+    emit("function ");
+    if (id) gen_code(id);
     gen_code(params);
     gen_code(block);
 }

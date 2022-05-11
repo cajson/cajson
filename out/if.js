@@ -1,6 +1,6 @@
 // source file: prog/if.cj
 import '../sys/cj.js'
-/* 0  */	let max=function(x,y)
+/* 0  */	let max=function (x,y)
 /* 0  */	{
 /* 0  */	  if (x>y) return x; else return y;;
 /* 0  */	};

@@ -10,4 +10,5 @@ set -x
 ./run.sh mt
 ./run.sh global
 ./run.sh obj
-
+./run.sh import
+./run.sh sha256

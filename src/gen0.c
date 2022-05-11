@@ -24,12 +24,13 @@ static void gen_map(link_t *head);
 static void gen_args(link_t *head);
 static void gen_assign(node_t *pid, node_t *type, node_t *exp);
 static void gen_return(int op, node_t *exp);
+static void gen_import(node_t *id1, node_t *id2);
 static void gen_while(node_t *exp, node_t *stmt);
 static void gen_if(node_t *exp, node_t *stmt1, node_t *stmt2);
 static void gen_for_in(node_t *id, node_t *exp, node_t *stmt);
 static void gen_for_of(node_t *id, node_t *exp, node_t *stmt);
 static void gen_for_to(node_t *id, node_t *from, node_t *to, node_t *step, node_t *stmt);
-static void gen_function(node_t *params, node_t *block);
+static void gen_function(node_t *id, node_t *params, node_t *block);
 static void gen_block(node_t *block);
 static void gen_stmts(node_t *node);
 static void gen_stmt(node_t *stmt);
@@ -77,6 +78,8 @@ static void gen_code(node_t *me) {
         push(Block); block_level++;
         gen_block(me);
         pop(Block);  block_level--;
+    } else if (type == Import) {
+        gen_import(args[0], args[1]);
     } else if (type == While) {
         push(While);
         gen_while(args[0], args[1]);
@@ -99,7 +102,7 @@ static void gen_code(node_t *me) {
         pop(ForTo);
     } else if (type == Function) {
         push(Function); fn_level++;
-        gen_function(args[0], args[1]);
+        gen_function(args[0], args[1], args[2]);
         pop(Function);  fn_level--;
     } else if (type == Return || type == '?') {
         gen_return(type, args[0]); // gen_return(type, me->node);

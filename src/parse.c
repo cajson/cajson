@@ -20,6 +20,12 @@ node_t *num() {
     return base(Num);
 }
 
+node_t *name() {
+    if (tk == Id) return id();
+    else if (tk == Str) return str();
+    else syntax_error();
+}
+
 node_t *tk_list(int type, char *end) {
     node_t *r = node(type);
     r->list = list();
@@ -127,13 +133,14 @@ node_t *map() {
 node_t *item() {
     if (tk == Str) {
         return str();
-    } else if (match("fn")) { // fn (params) block
+    } else if (match("fn")) { // fn id?(params) block
         next();
+        node_t *nid = (tk==Id) ? id() : NULL;
         skip('(');
         node_t *p1 = params();
         skip(')');
         node_t *b1 = block();
-        return op2(Function, p1, b1);
+        return op3(Function, nid, p1, b1);
     } else if (tk == '{') { // if (match("map")) { // map
         return map();
     } else if (tk == '[') { // array
@@ -162,7 +169,7 @@ node_t *type() {
 // assign = pid(:type?)?= expr
 node_t *assign() {
     scan_save();
-    if (contain("@$", tk) || tk == Id) {
+    if (contain("@$", tk) || (tk == Id && !match("fn"))) {
         node_t *nid = pid(), *t = NULL, *e = NULL;
         if (tk == ':') { // 如果沒有 : ，會傳回 NULL
             next();
@@ -204,6 +211,15 @@ node_t *stmt() {
     node_t *e, *s, *r=node(Stmt);
     if (tk == '{') { // block
         return block();
+    } else if (match("import")) { // import name as id
+        next();
+        node_t *name1, *id2;
+        name1 = name();
+        if (match("as")) {
+            next();
+            id2 = id();
+        }
+        r->node = op2(Import, name1, id2);
     } else if (match("while")) { // while expr stmt
         next();
         e = expr();

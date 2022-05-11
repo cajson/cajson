@@ -1,6 +1,6 @@
 // source file: prog/sum.cj
 import '../sys/cj.js'
-/* 0  */	let sum=function(n)
+/* 0  */	let sum=function (n)
 /* 0  */	{
 /* 1  */	  let s=0;
 /* 2  */	  for (let i=1;i<=n;i++) s=(s+i);;

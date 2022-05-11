@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-// #define debug(...) printf(__VA_ARGS__)
-#define debug(...) 
+#define debug(...) printf(__VA_ARGS__)
+// #define debug(...) 
 #define NMAX 100000
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
 #define size(x) (sizeof(x)/sizeof(typeof (x)))
@@ -18,7 +18,7 @@ enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   Or='|',And='&', Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
   Id, Num, Str, Function, Array, Map, Pair, Block, Args, Params, Param, 
-  If, While, ForIn, ForOf, ForTo, 
+  If, While, ForIn, ForOf, ForTo, Import,
   Stmts, Stmt, Expr, Item, Term, Assign, Type, Token, Pid,
   Op0Begin=200, Continue, Break, Op0End,
   Op1Begin, Neg, Inc, Dec, Return, Global, This, Op1End, 

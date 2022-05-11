@@ -70,9 +70,10 @@ void scan() { // 詞彙解析 lexer
   }
   token.tk = tk;
   token.len = p-token.str;
+  // debug("tk_top=%d ", tk_top);
+  debug("%.*s ", token.len, token.str);
   ptoken = &tokens[tk_top++];
   *ptoken = token;
-  debug("%.*s ", token.len, token.str);
 }
 
 bool tk_match(token_t t, char *str) {

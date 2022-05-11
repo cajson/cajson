@@ -1,24 +1,45 @@
-#include <gen_j.c>
+#include <gen1.c>
 
-static void gen_import(node_t *name1, node_t *id2) {
-    emit("import ");
-    gen_code(name1);
-    emit(" as ");
-    gen_code(id2);
+// array = [ expr* ]
+static void gen_array(link_t *head) {
+    emit("{");
+    gen_list(head, ",");
+    emit("}");
 }
+
+static void gen_str(node_t *node) {
+    emit("\"%.*s\"", node->ptk->len-2, node->ptk->str+1);
+}
+
+static void gen_pair(node_t *n1, node_t *n2) { // ??
+    gen_code(n1);
+    emit(":");
+    gen_code(n2);
+}
+
+// map = [ (expr:expr)* ]
+static void gen_map(link_t *head) { // ??
+    emit("{");
+    gen_list(head, ",");
+    emit("}");
+}
+
 
 // pid = (@|$)? id
 static void gen_pid(node_t *pid) {
     node_t *n = pid->node;
+    /*
     if (n->type == Global) {
         emit("@");
     } else if (n->type == This) {
         emit("$");
     }
+    */
     gen_code(n->array[0]);
 }
 
-// term = (@|$)? id ( [expr] | . id | args )*      // pid=(@|$)? id
+// c: no change
+// term = pid ( [expr] | . id | args )*
 static void gen_term(node_t *pid, link_t *head) {
     link_t *p;
     gen_code(pid);
@@ -41,9 +62,10 @@ static void gen_term(node_t *pid, link_t *head) {
 static void gen_assign(node_t *pid, node_t *type, node_t *exp) {
     gen_code(pid);
     if (type) {
-        emit(":");
+        // emit(":");
         if (type->list != NULL)
             gen_list(type->list->head, "");
+        emit(" ");
     }
     if (exp) {
         emit("=");
@@ -53,9 +75,7 @@ static void gen_assign(node_t *pid, node_t *type, node_t *exp) {
 
 // (return|?) expr
 static void gen_return(int op, node_t *exp) {
-    char name[20];
-    id_name(op, name);
-    emit("%s ", name);
+    emit("return ");
     gen_code(exp);
 }
 
@@ -85,31 +105,40 @@ static void gen_for_of(node_t *id, node_t *exp, node_t *stmt) {
     gen_for3(" of ", id, exp, stmt);
 }
 
-// for id:=expr to expr (step expr) stmt
+// for id=expr to expr (step expr) stmt
 static void gen_for_to(node_t *id, node_t *from, node_t *to, node_t *step, node_t *stmt) {
-    emit("for ");
+    emit("for (int ");
     gen_code(id);
-    emit(":=");
+    emit("=");
     gen_code(from);
-    emit(" to ");
+    emit(";");
+    gen_code(id);
+    emit("<=");
     gen_code(to);
-    if (step != NULL) {
-        emit(" step ");
+    emit(";")
+    gen_code(id);
+    if (step) {
+        emit("+=");
         gen_code(step);
+    } else {
+        emit("++");
     }
+    emit(")");
     gen_code(stmt);
 }
 
-// function = fn (params) block
+// type 沒紀錄，要修改
+// function = fn id?(params) block
 static void gen_function(node_t *id, node_t *params, node_t *block) {
-    emit("fn ");
+    emit("void ");
     if (id) gen_code(id);
     gen_code(params);
     gen_code(block);
 }
 
-void gen_cj(node_t *root) {
+void gen_c(node_t *root) {
     emit("// source file: %s\n", ifile);
     gen_code(root);
     emit("\n");
 }
+

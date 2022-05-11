@@ -1,6 +1,6 @@
 // source file: prog/while.cj
 import '../sys/cj.js'
-/* 0  */	let sum=function(n)
+/* 0  */	let sum=function (n)
 /* 0  */	{
 /* 1  */	  let i=1;
 /* 2  */	  let s=0;

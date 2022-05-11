@@ -1,6 +1,6 @@
 // source file: prog/array.cj
 import '../sys/cj.js'
-/* 0  */	let mean=function(a)
+/* 0  */	function mean(a)
 /* 0  */	{
 /* 1  */	  let s=0;
 /* 2  */	  for (let i in a) s=(s+a[i]);;

@@ -24,6 +24,7 @@ item = Str | function | array | map | ( expr ) | factor
 factor = (!-~) (factor) | Num | (expr) | term
 
 term = pid ( [expr] | . id | args )*
+// term = (await|new) pid ( [expr] | . id | args )*
 
 pid = (@|$)? id
 
