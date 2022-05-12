@@ -13,3 +13,4 @@ set -x
 ./run.sh import
 ./run.sh sha256
 ./run.sh sqlite
+./run.sh python

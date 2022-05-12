@@ -1,6 +1,6 @@
 token_t tokens[NMAX];
 token_t token, *ptoken;   // current token (目前 token)
-int tk, tk_top = 0, line = 0;
+int tk, tk_top = 0, line = 1;
 char *p, *lp;
 
 // store the folowing variable for restore

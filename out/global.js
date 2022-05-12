@@ -1,7 +1,7 @@
 // source file: prog/global.cj
 import '../sys/cj.js'
-/* 0  */	global.print('hello 你好!');
-/* 2  */	let x=3;
-/* 4  */	global.x=5;
-/* 6  */	print('x=',x);
-/* 7  */	print('@x=',global.x);
+/* 1  */	global.print('hello 你好!');
+/* 3  */	let x=3;
+/* 5  */	global.x=5;
+/* 7  */	print('x=',x);
+/* 8  */	print('@x=',global.x);

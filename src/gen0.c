@@ -7,7 +7,7 @@ static int fn_level = 0;
 static bool show_line = true;
 
 #define emit(...) { debug(__VA_ARGS__); if (ofp) fprintf(ofp, __VA_ARGS__); }
-#define line(i) if (show_line) emit("/* %-3d*/\t", i);
+#define line(i) if (show_line) { if (i>0) { emit("/* %-3d*/\t", i); } else { emit("/*    */\t"); }}
 
 static void gen_str(node_t *node);
 static void gen_num(node_t *node);
