@@ -4,5 +4,5 @@ fn mean(a:int*) {
     return s/a.length
 }
 
-print('mean([1 2 3 4 5])=', mean([1 2 3 4 5]))
+print('mean([1 2 3 4 5])=', mean([1,2,3,4,5]))
  

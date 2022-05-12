@@ -12,3 +12,4 @@ set -x
 ./run.sh obj
 ./run.sh import
 ./run.sh sha256
+./run.sh sqlite

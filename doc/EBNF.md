@@ -6,6 +6,7 @@ stmts = stmt*
 block = { stmts }
 
 stmt = block                     |
+       fn id(params) block       |
        while expr stmt           | 
        if expr stmt (else stmt)? |
        for id (in|of) expr stmt  |
@@ -19,7 +20,7 @@ assign = pid(:type)?= expr
 
 expr = item (op2 expr)*
 
-item = Str | function | array | map | ( expr ) | factor
+item = Str | array | map | ( expr ) | factor
 
 factor = (!-~) (factor) | Num | (expr) | term
 

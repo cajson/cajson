@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
   }
   pool_init();
   p = lp = source = file_read(ifile);
+  printf("%s", source);
   if (o_lex) { lex(source); return 1; }
   node_t *ast = parse(source);
   // gen_cj(ast);

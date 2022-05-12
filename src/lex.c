@@ -68,10 +68,12 @@ void scan() { // 詞彙解析 lexer
       else { break; } // 其他字元，單一個字即 token
     }
   }
-  token.tk = tk;
   token.len = p-token.str;
-  // debug("tk_top=%d ", tk_top);
+  int kc = key_code(token.str, token.len);
+  if (kc >= 0) tk = kc;
+  token.tk = tk;
   debug("%.*s ", token.len, token.str);
+  // debug("tk=%d ", tk);
   ptoken = &tokens[tk_top++];
   *ptoken = token;
 }
@@ -80,7 +82,7 @@ bool tk_match(token_t t, char *str) {
     int len = strlen(str);
     return len == t.len && memcmp(str, t.str, len)==0;
 }
-
+/*
 bool match(char *str) {
     return tk_match(token, str);
 }
@@ -91,7 +93,7 @@ bool member(char *a[], int len) {
     }
     return false;
 }
-
+*/
 token_t next() {
   token_t r=token; 
   scan();
@@ -99,7 +101,7 @@ token_t next() {
 }
 
 #define skip(t) ({token_t r=token; if (tk==t) next(); else syntax_error(); r; })
-#define skip_str(str) ({token_t r=token; if (match(str)) next(); else syntax_error(); r; })
+// #define skip_str(str) ({token_t r=token; if (match(str)) next(); else syntax_error(); r; })
 
 void lex(char *source) {
     p = source;

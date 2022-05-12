@@ -2,24 +2,38 @@ char *ifile=NULL, *ofile=NULL;
 int src, debug, o_run, o_dump;
 char *source;
 
-char *id_names[] = {
-  "op0begin", "continue", "break", "op0end",
-  "op1begin", "-", "++", "--", "return", "global.", "this.", "op1end",
+char *key_names[] = {
+  "keybegin", 
+  "import", "as", "if", "while", "for", "else", 
+  "fn", "in", "of", "to", "step", "await", "new", 
+  "continue", "break", "return", 
+  "keyend", 
+  "op1begin", "-", "++", "--", "global.", "this.", "op1end",
   "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"
+  "end",
 };
 
-char* id_name(int op, char *name) {
-  if (op < AsciiEnd)
-    sprintf(name, "%c", (char) op);
-  else if (op > Op0Begin && op < Op2End)
-    sprintf(name, "%s", id_names[op-Op0Begin]);
+int key_code(char *key, int len) {
+  for (int i=KeyBegin+1; i<KeyEnd; i++) {
+    int ni = i-KeyBegin;
+    if (len == strlen(key_names[ni]) && memcmp(key, key_names[ni], len)==0)
+      return i;
+  }
+  return -1;
+}
+
+char* key_name(int key, char *name) {
+  if (key < AsciiEnd)
+    sprintf(name, "%c", (char) key);
+  else if (key > KeyBegin && key < End)
+    sprintf(name, "%s", key_names[key-KeyBegin]);
   else
-    error("id_name(%d) out of range...", op);
+    error("key_name(%d) out of range...", key);
   return name;
 }
 
 bool is_op1(int op) {
-  return contain("!~@$", op) || (op > Op1Begin && op <Op1End);
+  return contain("!~@$", op) || (op > Op1Begin && op <Op1End) || op == Return;
 }
 
 bool is_op2(int op) {

@@ -12,7 +12,7 @@ for name of names
 
 // Print out data in table
 for r of db.query('SELECT id, name FROM people')
-  console.log(r.id, r.name)
+  print(r[0], r[1])
 
 // Close connection
 db.close()

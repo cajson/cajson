@@ -17,11 +17,17 @@ enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   None=0,
   Or='|',And='&', Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
-  Id, Num, Str, Function, Array, Map, Pair, Block, Args, Params, Param, 
-  If, While, ForIn, ForOf, ForTo, Import,
-  Stmts, Stmt, Expr, Item, Term, Assign, Type, Token, Pid,
-  Op0Begin=200, Continue, Break, Op0End,
-  Op1Begin, Neg, Inc, Dec, Return, Global, This, Op1End, 
+  Id=130, Num, Str, Function, Array, 
+  Map, Pair, Block, Args, Params, 
+  Param, ForIn, ForOf, ForTo, Stmts, 
+  Stmt, Expr, Item, Term, Assign, 
+  Type, Token, Pid, Key,
+  KeyBegin=199, 
+  Import, As, If, While, For, 
+  Else, Fn, In, Of, To, Step, 
+  Await, New, Continue, Break, Return,
+  KeyEnd,
+  Op1Begin, Neg, Inc, Dec, Global, This, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
   End,
 };
@@ -64,7 +70,7 @@ char *ifile, *ofile;
 FILE *ofp;
 
 // API
-char* id_name(int op, char *name);
+char* key_name(int key, char *name);
 int read_source(char *file);
 void lex(char *source);
 node_t *parse(char *source);

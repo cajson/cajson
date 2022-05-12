@@ -12,10 +12,11 @@ static bool show_line = true;
 static void gen_str(node_t *node);
 static void gen_num(node_t *node);
 static void gen_id(node_t *node);
+static void gen_key(node_t *node);
 static void gen_op0(int op);
 static void gen_op1(int op, node_t *node);
 static void gen_op2(node_t *node1, int op, node_t *node2);
-static void gen_term(node_t *pid, link_t *head);
+static void gen_term(node_t *key, node_t *pid, link_t *head);
 static void gen_pid(node_t *pid);
 static void gen_params(link_t *head);
 static void gen_array(link_t *head);
@@ -116,10 +117,15 @@ static void gen_code(node_t *me) {
         gen_map(me->list->head);
     } else if (type == Args) { // args  = ( expr* )
         gen_args(me->list->head);
-    } else if (type == Term) { // term =  pid ([expr] | . id | args )*
+    } else if (type == Term) { // term =  (async|new) pid ([expr] | . id | args )*
         link_t *head = me->list->head;
-        node_t *id = head->node;
-        gen_term(id, head->next);
+        node_t *nkey=NULL, *nid=NULL;
+        if (head->node->type == Key) {
+            nkey = head->node;
+            head = head->next;
+        } 
+        nid = head->node;
+        gen_term(nkey, nid, head->next);
     } else if (type == Pid) { // pid = (@|$)? id
         gen_pid(me);
     } else if (type==Assign) {
@@ -128,6 +134,8 @@ static void gen_code(node_t *me) {
         gen_pair(args[0], args[1]);
     } else if (type == Token) {
         gen_token(me);
+    } else if (type == Key) {
+        gen_key(me);
     } else if (me->len == 0) { // op0 或 type 中的 * ...
         gen_op0(type);
     } else if (me->len == 1) { // (is_op1(type)) 不能用，因為 type 中可能出現該運算

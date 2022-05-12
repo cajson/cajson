@@ -1,10 +1,10 @@
 #include <gen_j.c>
 
-static void gen_import(node_t *name1, node_t *id2) {
+static void gen_import(node_t *str1, node_t *id2) {
     emit("import * as ");
     gen_code(id2);
     emit(" from ");
-    gen_code(name1);
+    gen_code(str1);
 }
 
 // pid = (@|$)? id
@@ -18,11 +18,14 @@ static void gen_pid(node_t *pid) {
     gen_code(n->array[0]);
 }
 
-// term = pid ( [expr] | . id | args )*      // pid=(@|$)? id
-static void gen_term(node_t *pid, link_t *head) {
-    link_t *p;
+// (await|new)? pid ( [expr] | . id | args )*
+static void gen_term(node_t *key, node_t *pid, link_t *head) {
+    if (key) {
+        gen_code(key);
+        emit(" ");
+    }
     gen_code(pid);
-    for (p=head; p != NULL; p = p->next) {
+    for (link_t *p=head; p != NULL; p = p->next) {
         node_t *n = p->node; int op = n->type;
         if (op == '[') {
             emit("[");

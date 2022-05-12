@@ -1,11 +1,16 @@
 node_t *expr();
 node_t *block();
 node_t *params();
+node_t *function();
 
 node_t *base(int type) {
     node_t *r = node(type);
     skip(type);
     return r;
+}
+
+node_t *key(int k) {
+    return op1(Key, base(k));
 }
 
 node_t *id() {
@@ -20,18 +25,18 @@ node_t *num() {
     return base(Num);
 }
 
-node_t *name() {
-    if (tk == Id) return id();
-    else if (tk == Str) return str();
-    else syntax_error();
+node_t *tok() {
+    node_t *n = node(Token);
+    next();
+    return n;
 }
 
 node_t *tk_list(int type, char *end) {
     node_t *r = node(type);
     r->list = list();
     while (tk != End && !contain(end, tk)) {
-        list_add(r->list, tk_node(Token));
-        next();
+        list_add(r->list, tok());
+        // next();
     }
     list_reverse(r->list);
     return r;
@@ -71,10 +76,12 @@ node_t *pid() {
     return r;
 }
 
-// term = pid ( [expr] | . id | args )*
+// term = (await|new)? pid ( [expr] | . id | args )*
 node_t *term() {
     node_t *r = node(Term);
     r->list = list();
+    if (tk == Await || tk == New)
+        list_add(r->list, key(tk));
     list_add(r->list, pid());
     while (contain("[.(", tk)) {
         if (tk == '[') { // array member
@@ -112,16 +119,16 @@ node_t *factor() {
     }
 }
 
-// map = { (expr:expr)* }
+// map = { (id|str):expr)* }
 node_t *map() {
     node_t *r = node(Map);
     r->list = list();
     skip('{');
     while (tk != '}') {
-        node_t *e1 = expr();
+        node_t *key = (tk == Id) ? id() : str(); // expr();
         skip(':');
         node_t *e2 = expr();
-        list_add(r->list, pair(e1, e2));
+        list_add(r->list, pair(key, e2));
         if (tk == ',') next();
     }
     skip('}');
@@ -129,18 +136,12 @@ node_t *map() {
     return r;
 }
 
-// item = Str | fn | array | map | factor
+// item = Function | Str | array | map | factor
 node_t *item() {
-    if (tk == Str) {
+    if (tk == Fn) {
+        return function();
+    } else if (tk == Str) {
         return str();
-    } else if (match("fn")) { // fn id?(params) block
-        next();
-        node_t *nid = (tk==Id) ? id() : NULL;
-        skip('(');
-        node_t *p1 = params();
-        skip(')');
-        node_t *b1 = block();
-        return op3(Function, nid, p1, b1);
     } else if (tk == '{') { // if (match("map")) { // map
         return map();
     } else if (tk == '[') { // array
@@ -166,24 +167,18 @@ node_t *type() {
     return tk_list(Type, "=),");
 }
 
-// assign = pid(:type?)?= expr
+// assign = term(:type?)?(= expr)?
 node_t *assign() {
-    scan_save();
-    if (contain("@$", tk) || (tk == Id && !match("fn"))) {
-        node_t *nid = pid(), *t = NULL, *e = NULL;
-        if (tk == ':') { // 如果沒有 : ，會傳回 NULL
-            next();
-            t = type(); // 如果是空的，會傳回 node with empty list
-        }
-        if (tk=='=') {
-            next();
-            e = expr();
-        }
-        if (e /*=expr*/ || contain(",)", tk) /*params*/)
-            return op3(Assign, nid, t, e);
+    node_t *n = item(), *t = NULL, *e = NULL;
+    if (tk == ':') { // 如果沒有 : ，會傳回 NULL
+        next();
+        t = type(); // 如果是空的，會傳回 node with empty list
     }
-    scan_restore();
-    return NULL;
+    if (tk=='=') {
+        next();
+        e = expr();
+    }
+    return op3(Assign, n, t, e);
 }
 
 // params = (assign*)
@@ -198,6 +193,16 @@ node_t *params() {
     return r;
 }
 
+// function = fn id?(params) block
+node_t *function() {
+    skip(Fn);
+    node_t *nid = (tk==Id) ? id() : NULL;
+    skip('(');
+    node_t *p1 = params();
+    skip(')');
+    node_t *b1 = block();
+    return op3(Function, nid, p1, b1);
+}
 // stmt = block                     |
 //        while expr stmt           | 
 //        if expr stmt (else stmt)? |
@@ -206,73 +211,71 @@ node_t *params() {
 //        return expr               |
 //        continue                  |
 //        break                     |
-//        assign
+//        term(:type?)?= expr
 node_t *stmt() {
     node_t *e, *s, *r=node(Stmt);
     if (tk == '{') { // block
         return block();
-    } else if (match("import")) { // import name as id
+    } else if (tk == Import) { // import name as id
         next();
-        node_t *name1, *id2;
-        name1 = name();
-        if (match("as")) {
+        node_t *str1, *id2;
+        str1 = str();
+        if (tk == As) {
             next();
             id2 = id();
         }
-        r->node = op2(Import, name1, id2);
-    } else if (match("while")) { // while expr stmt
+        r->node = op2(Import, str1, id2);
+    } else if (tk == While) { // while expr stmt
         next();
         e = expr();
         s = stmt();
         r->node = op2(While, e, s);
-    } else if (match("if")) { // if expr stmt (else stmt)?
+    } else if (tk == If) { // if expr stmt (else stmt)?
         next();
         e = expr();
         s = stmt();
         node_t *s2 = NULL;
-        if (match("else")) {
+        if (tk == Else) {
             next();
             s2 = stmt();
         }
         r->node = op3(If, e, s, s2);
-    } else if (match("for")) { // for id in expr stmt
+    } else if (tk == For) { // for id in expr stmt
         next();
         node_t *nid = id();
         // if (tk == ':') next();
-        if (match("in") || match("of")) {
-            token_t optk = next();
-            int op = (tk_match(optk, "in"))?ForIn:ForOf;
+        if (tk == In || tk == Of) {
+            token_t opt = next();
+            int op = (opt.tk == In)?ForIn:ForOf;
             e = expr();
             s = stmt();
             r->node = op3(op, nid, e, s);
-        } else if (match(":")) {
+        } else if (tk == ':') {
             skip(':');
             skip('=');
             node_t *step=NULL, *from, *to;
             from = expr();
-            skip_str("to");
+            skip(To);
             to = expr();
-            if (match("step")) {
+            if (tk == Step) {
                 next();
                 step = expr();
             }
             s = stmt();
             r->node = op5(ForTo, nid, from, to, step, s);
         }
-    } else if (match("return") || tk == '?') { // ?exp = return exp
-        token_t optk = next();
+    } else if (tk == Return || tk == '?') { // ?exp = return exp
+        token_t t = next();
         e = expr();
-        int op = (optk.tk == '?') ? '?' : Return;
+        int op = (t.tk == '?') ? '?' : Return;
         r->node = op1(op, e);
-    } else if (match("continue")) { // continue
+    } else if (tk == Continue || tk == Break) {
+        token_t t = next();
         next();
-        r->node = op0(Continue);
-    } else if (match("break")) { // break
-        next();
-        r->node = op0(Break);
-    } else {
+        r->node = op0(t.tk);
+    } else { // term(:type?)?(= expr)?
         r->node = assign();
-        if (!r->node) r->node = expr();
+        // if (!r->node) r->node = expr();
     }
     return r;
 }

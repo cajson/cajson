@@ -22,12 +22,6 @@ list_t *list() {
     return pool(sizeof(list_t));
 }
 
-node_t *tk_node() {
-    node_t *n = node(Token);
-    n->len = 0;
-    return n;
-}
-
 node_t *op_n(int op, node_t *nodes[], int len) {
     node_t *n = node(op);
     n->len = len;

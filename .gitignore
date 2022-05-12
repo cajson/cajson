@@ -6,4 +6,4 @@ bak
 bak
 *.exe
 *.zip
-/cj.dSYM
+*.dSYM

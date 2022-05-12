@@ -10,13 +10,13 @@ static void gen_id(node_t *node) {
 
 static void gen_op0(int op) {
     char name[20];
-    id_name(op, name);
+    key_name(op, name);
     emit("%s", name);
 }
 
 static void gen_op1(int op, node_t *node) {
     char name[20];
-    id_name(op, name);
+    key_name(op, name);
     emit("%s", name);
     gen_code(node);
 }
@@ -25,7 +25,7 @@ static void gen_op2(node_t *node1, int op, node_t *node2) {
     emit("(");
     gen_code(node1);
     char name[20];
-    id_name(op, name);
+    key_name(op, name);
     emit("%s", name);
     gen_code(node2);
     emit(")");
