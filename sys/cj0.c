@@ -41,6 +41,8 @@ typedef struct Array {
 typedef struct Obj {
 } Obj;
 
+/*
+
 int main() {
     Array x = { .len=10, .inta=(int[10]){0,1,2,3,4,5} };
     // int a[] = {0,1,2,3,4};
@@ -50,4 +52,4 @@ int main() {
     int t = get(x, 3);
     printf("t=%d\n", t); 
 }
- 
+*/

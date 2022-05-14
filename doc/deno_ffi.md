@@ -1,11 +1,12 @@
 # Deno FFI
 
-ffi 支援 i8,i16,...,u8,u16,...,usize,f32,f64,void,pointer (const uint8_t *)
+ffi 支援 i8,i16,...,u8,u16,...,usize,f32,f64,void,pointer (const uint8_t *) 與 global static.
 
 * https://deno.land/manual/runtime/ffi_api
     * https://deno.com/blog/v1.13#experimental-ffi-replaces-native-plugin-system
     * https://deno.com/blog/v1.15#ffi-improvements
     * https://deno.com/blog/v1.17#updates-to-the-ffi-api
+    * https://deno.com/blog/v1.20#ffi-api-supports-read-only-global-statics
 
 * https://deno.land/x/sqlite3@0.4.2/src/ffi.ts
 

@@ -11,7 +11,8 @@
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
 #define size(x) (sizeof(x)/sizeof(typeof (x)))
 #define contain(set, ch) strchr(set, ch)
-
+#define ok(exp) { if (!exp) error("ok() fail at file=%s, line=%d\n", __FILE__, __LINE__); }
+#define fail() { error("Fail: not implemented yet!"); ok(0); }
 // lex
 enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   None=0,
@@ -76,3 +77,4 @@ void lex(char *source);
 node_t *parse(char *source);
 void gen_cj(node_t *root);
 void gen_js(node_t *root);
+void gen_c(node_t *root);
