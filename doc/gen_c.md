@@ -29,6 +29,8 @@ int* a=(int[]){1,2,3,4,5};
 
 問題是，自動標型態可行嗎？能做到甚麼程度呢？
 
+如果只是要用 C 寫 function，看來不用標型態 ...
+
 ```cpp
 // source file: prog/c/carray.cj
 #include <cj.h>
