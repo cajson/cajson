@@ -225,6 +225,17 @@ node_t *stmt() {
             id2 = id();
         }
         r->node = op2(Import, str1, id2);
+    } else if (tk == Try) {
+        next();
+        node_t *nbody = stmt();
+        skip(Catch);
+        node_t *nexp = expr();
+        node_t *ncatch = stmt();
+        r->node = op3(Try, nbody, nexp, ncatch);
+    } else if (tk == Throw) {
+        next();
+        e = expr();
+        r->node = op1(Throw, e);
     } else if (tk == Class) {
         next();
         node_t *nid = id();

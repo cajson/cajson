@@ -17,7 +17,7 @@ static void gen_op0(int op) {
 static void gen_op1(int op, node_t *node) {
     char name[20];
     key_name(op, name);
-    emit("%s", name);
+    emit("%s ", name);
     gen_code(node);
 }
 

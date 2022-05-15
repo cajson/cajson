@@ -16,3 +16,4 @@ set -x
 # ./js_run.sh python
 ./js_run.sh map
 ./js_run.sh class
+./js_run.sh try

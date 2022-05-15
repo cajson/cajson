@@ -1,5 +1,14 @@
 #include <gen1.c>
 
+static void gen_try(node_t *nbody, node_t *nexp, node_t *ncatch) {
+    emit("try ");
+    gen_code(nbody);
+    emit(" catch (");
+    gen_code(nexp);
+    emit(")");
+    gen_code(ncatch);
+}
+
 // array = [ expr* ]
 static void gen_array(link_t *head) {
     emit("[");
