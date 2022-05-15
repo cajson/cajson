@@ -10,3 +10,8 @@ $ deno run -A --unstable num_py1.js
 $ deno run -A --unstable do_py1.js
 55
 ```
+
+## 參考
+
+* https://github.com/denosaurs/deno_python/
+* https://github.com/denodrivers/sqlite3

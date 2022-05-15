@@ -11,22 +11,23 @@
 #define error(...) { fprintf(stderr, __VA_ARGS__); exit(1); }
 #define size(x) (sizeof(x)/sizeof(typeof (x)))
 #define contain(set, ch) strchr(set, ch)
-#define ok(exp) { if (!exp) error("ok() fail at file=%s, line=%d\n", __FILE__, __LINE__); }
+#define ok(exp) { if (!(exp)) error("ok() fail at file=%s, line=%d\n", __FILE__, __LINE__); }
 #define fail() { error("Fail: not implemented yet!"); ok(0); }
 // lex
 enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   None=0,
   Or='|',And='&', Xor='^',Add='+',Sub='-',Mul='*',Div='/', Mod='%',
   AsciiEnd=128, 
-  Id=130, Num, Str, Function, Array, 
-  Map, Pair, Block, Args, Params, 
+  Id=130, Num, Str, Array, Function, 
+  Pair, Block, Args, Params, 
   Param, ForIn, ForOf, ForTo, Stmts, 
   Stmt, Expr, Item, Term, Assign, 
   Type, Token, Pid, Key,
   KeyBegin=199, 
   Import, As, If, While, For, 
-  Else, Fn, In, Of, To, Step, 
-  Await, New, Continue, Break, Return,
+  Else, In, Of, To, Step, 
+  Await, New, Continue, Break, Return, 
+  Fn, Object, Class, Map,
   KeyEnd,
   Op1Begin, Neg, Inc, Dec, Global, This, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,
@@ -73,6 +74,8 @@ FILE *ofp;
 // API
 char* key_name(int key, char *name);
 int read_source(char *file);
+bool head_eq(char *str1, int len1, char *str2);
+bool tail_eq( char *str, char *end);
 void lex(char *source);
 node_t *parse(char *source);
 void gen_cj(node_t *root);

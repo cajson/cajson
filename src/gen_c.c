@@ -33,7 +33,7 @@ static void gen_pair(node_t *n1, node_t *n2) {
 }
 
 // map = [ (expr:expr)* ]
-static void gen_map(link_t *head) {
+static void gen_map(int type, link_t *head) {
     fail();
 /*
     emit("{");

@@ -5,6 +5,7 @@ export function print(...args) {
 }
 
 export function str(o) {
+    if (o.__str) return o.__str();
     return o.toString()
 }
 

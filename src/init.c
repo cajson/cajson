@@ -4,9 +4,10 @@ char *source;
 
 char *key_names[] = {
   "keybegin", 
-  "import", "as", "if", "while", "for", "else", 
-  "fn", "in", "of", "to", "step", "await", "new", 
-  "continue", "break", "return", 
+  "import", "as", "if", "while", "for", 
+  "else", "in", "of", "to", "step",  
+  "await", "new", "continue", "break", "return", 
+  "fn", "object", "class", "map",
   "keyend", 
   "op1begin", "-", "++", "--", "global.", "this.", "op1end",
   "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"

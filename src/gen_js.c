@@ -1,5 +1,38 @@
 #include <gen_j.c>
 
+// map = [ (expr:expr)* ]
+static void gen_map(int type, link_t *head) {
+    if (type == Class) {
+        emit("class {\n");
+        for (link_t *p = head; p != NULL; p = p->next) {
+            ok(p->node->type == Pair);
+            node_t *nkey = p->node->array[0];
+            node_t *nval = p->node->array[1];
+            if (nval->type == Function) {
+                char *name = nkey->ptk->str; int len=nkey->ptk->len;
+                line(nkey->ptk->line); indent(block_level); 
+                if (head_eq(name, len, "__init")) {
+                    emit("constructor");
+                } else {
+                    gen_code(nkey);
+                }
+                node_t *params = nval->array[1], *block=nval->array[2];
+                gen_code(params);
+                gen_code(block);
+            }
+            emit("\n");
+        }
+        emit("}");
+        return;
+    }
+    if (type == Map) {
+        // emit("map");
+    }
+    emit("{");
+    gen_list(head, ",");
+    emit("}");
+}
+
 static void gen_import(node_t *str1, node_t *id2) {
     emit("import * as ");
     gen_code(id2);

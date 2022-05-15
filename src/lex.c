@@ -78,11 +78,12 @@ void scan() { // 詞彙解析 lexer
   *ptoken = token;
 }
 
-bool tk_match(token_t t, char *str) {
-    int len = strlen(str);
-    return len == t.len && memcmp(str, t.str, len)==0;
-}
 /*
+bool tk_match(token_t *t, char *str) {
+    int len = strlen(str);
+    return len == t->len && memcmp(str, t->str, len)==0;
+}
+
 bool match(char *str) {
     return tk_match(token, str);
 }

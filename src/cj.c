@@ -32,9 +32,9 @@ int main(int argc, char **argv) {
   if (ofile) ofp = fopen(ofile, "w"); else ofp = stdout;
   // ofp = stdout;
   if (!ofile) {}
-  else if (ends_with(ofile, ".c")) gen_c(ast);
-  else if (ends_with(ofile, ".cj")) gen_cj(ast);
-  else if (ends_with(ofile, ".js")) gen_js(ast);
+  else if (tail_eq(ofile, ".c")) gen_c(ast);
+  else if (tail_eq(ofile, ".cj")) gen_cj(ast);
+  else if (tail_eq(ofile, ".js")) gen_js(ast);
   else error("%s: file type not supported!\n", ofile);
   pool_free();
 }

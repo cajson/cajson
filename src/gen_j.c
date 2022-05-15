@@ -22,9 +22,3 @@ static void gen_pair(node_t *n1, node_t *n2) {
     gen_code(n2);
 }
 
-// map = [ (expr:expr)* ]
-static void gen_map(link_t *head) {
-    emit("{");
-    gen_list(head, ",");
-    emit("}");
-}

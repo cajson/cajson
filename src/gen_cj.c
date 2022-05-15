@@ -1,5 +1,17 @@
 #include <gen_j.c>
 
+// map = [ (expr:expr)* ]
+static void gen_map(int type, link_t *head) {
+    if (type == Class) {
+        emit("class");
+    } else if (type == Map) {
+        emit("map");
+    }
+    emit("{");
+    gen_list(head, ",");
+    emit("}");
+}
+
 static void gen_import(node_t *str1, node_t *id2) {
     emit("import ");
     gen_code(str1);

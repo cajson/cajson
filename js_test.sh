@@ -13,4 +13,6 @@ set -x
 ./js_run.sh import
 ./js_run.sh sha256
 ./js_run.sh sqlite
-./js_run.sh python
+# ./js_run.sh python
+./js_run.sh map
+./js_run.sh class

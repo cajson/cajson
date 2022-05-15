@@ -42,7 +42,12 @@ char *file_read(char *fname) {
     return buf;
 }
 
-bool ends_with( char *str, char *end) {
-  char *p = str+strlen(str)-strlen(end);
-  return strcmp(p, end)==0;
+bool tail_eq(char *str, char *tail) {
+  char *p = str+strlen(str)-strlen(tail);
+  return strcmp(p, tail)==0;
+}
+
+bool head_eq(char *str, int len, char *head) {
+    int hlen = strlen(head);
+    return hlen == len && memcmp(str, head, len)==0;
 }
