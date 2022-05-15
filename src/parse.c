@@ -120,8 +120,8 @@ node_t *factor() {
 }
 
 // map = { (id|str):expr)* }
-node_t *map(int type) {
-    node_t *r = node(type); // node(Map);
+node_t *map() {
+    node_t *r = node(Map);
     r->list = list();
     skip('{');
     while (tk != '}') {
@@ -144,10 +144,8 @@ node_t *item() {
         return array();
     } else if (tk == Fn) {
         return function();
-    } else if (tk == '{' || tk == Class || tk == Object || tk == Map) { // if (match("map")) { // map
-        int type = tk;
-        if (tk == '{') type = Object; else next();
-        return map(type);
+    } else if (tk == '{') { // map
+        return map();
     } else {
         return factor();
     }
@@ -227,6 +225,11 @@ node_t *stmt() {
             id2 = id();
         }
         r->node = op2(Import, str1, id2);
+    } else if (tk == Class) {
+        next();
+        node_t *nid = id();
+        node_t *nmap = map();
+        r->node = op2(Class, nid, nmap);
     } else if (tk == While) { // while expr stmt
         next();
         e = expr();

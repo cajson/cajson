@@ -1,34 +1,36 @@
 #include <gen_j.c>
 
-// map = [ (expr:expr)* ]
-static void gen_map(int type, link_t *head) {
-    if (type == Class) {
-        emit("class {\n");
-        for (link_t *p = head; p != NULL; p = p->next) {
-            ok(p->node->type == Pair);
-            node_t *nkey = p->node->array[0];
-            node_t *nval = p->node->array[1];
-            if (nval->type == Function) {
-                char *name = nkey->ptk->str; int len=nkey->ptk->len;
-                line(nkey->ptk->line); indent(block_level); 
-                if (head_eq(name, len, "__init")) {
-                    emit("constructor");
-                } else {
-                    gen_code(nkey);
-                }
-                node_t *params = nval->array[1], *block=nval->array[2];
-                gen_code(params);
-                gen_code(block);
+// class = 'class' id map
+static void gen_class(node_t *nid, node_t *nmap) {
+    emit("class ");
+    gen_code(nid);
+    emit(" {\n"); block_level++;
+    for (link_t *p = nmap->list->head; p != NULL; p = p->next) {
+        ok(p->node->type == Pair);
+        node_t *nkey = p->node->array[0];
+        node_t *nval = p->node->array[1];
+        if (nval->type == Function) {
+            char *name = nkey->ptk->str; int len=nkey->ptk->len;
+            line(nkey->ptk->line); indent(block_level); 
+            if (head_eq(name, len, "__init")) {
+                emit("constructor");
+            } else {
+                gen_code(nkey);
             }
-            emit("\n");
+            node_t *params = nval->array[1], *block=nval->array[2];
+            gen_code(params);
+            gen_code(block);
         }
-        emit("}");
-        return;
+        emit("\n");
     }
-    if (type == Map) {
-        // emit("map");
-    }
+    block_level --;
+    line(0); indent(block_level); emit("}");
+}
+
+// map = [ (expr:expr)* ]
+static void gen_map(node_t *nmap) {
     emit("{");
+    link_t *head = nmap->list->head;
     gen_list(head, ",");
     emit("}");
 }

@@ -21,7 +21,8 @@ static void gen_pid(node_t *pid);
 static void gen_params(link_t *head);
 static void gen_array(link_t *head);
 static void gen_pair(node_t *n1, node_t *n2);
-static void gen_map(int type, link_t *head);
+static void gen_class(node_t *nid, node_t *nmap);
+static void gen_map(node_t *nmap);
 static void gen_args(link_t *head);
 static void gen_assign(node_t *pid, node_t *type, node_t *exp);
 static void gen_return(int op, node_t *exp);
@@ -113,8 +114,10 @@ static void gen_code(node_t *me) {
         gen_params(me->list->head);
     } else if (type == Array) {
         gen_array(me->list->head);
-    } else if (type == Map || type == Class || type == Object) {
-        gen_map(me->type, me->list->head);
+    } else if (type == Class) {
+        gen_class(args[0], args[1]);
+    } else if (type == Map) {
+        gen_map(me); // gen_map(me->list->head);
     } else if (type == Args) { // args  = ( expr* )
         gen_args(me->list->head);
     } else if (type == Term) { // term =  (async|new) pid ([expr] | . id | args )*

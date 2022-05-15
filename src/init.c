@@ -7,7 +7,7 @@ char *key_names[] = {
   "import", "as", "if", "while", "for", 
   "else", "in", "of", "to", "step",  
   "await", "new", "continue", "break", "return", 
-  "fn", "object", "class", "map",
+  "fn", "class", "map",
   "keyend", 
   "op1begin", "-", "++", "--", "global.", "this.", "op1end",
   "op2begin", "||", "&&", "==", "!=", "<=", ">=", "<<", ">>", "op2end"

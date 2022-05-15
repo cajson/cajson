@@ -1,4 +1,4 @@
-Person := class {
+class Person {
     __init:fn(name, age) {
         $name = name
         $age = age
@@ -7,6 +7,7 @@ Person := class {
         return $name+' '+$age
     }
 }
+
 print(Person)
 
 p:=new Person('ccc', 52)

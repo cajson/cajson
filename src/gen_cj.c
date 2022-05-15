@@ -1,12 +1,17 @@
 #include <gen_j.c>
 
 // map = [ (expr:expr)* ]
-static void gen_map(int type, link_t *head) {
-    if (type == Class) {
-        emit("class");
-    } else if (type == Map) {
-        emit("map");
-    }
+static void gen_class(node_t *nid, node_t *nmap) {
+    emit("class ");
+    gen_code(nid);
+    emit("{");
+    gen_map(nmap);
+    emit("}");
+}
+
+// map = [ (expr:expr)* ]
+static void gen_map(node_t *nmap) {
+    link_t *head = nmap->list->head;
     emit("{");
     gen_list(head, ",");
     emit("}");

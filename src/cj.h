@@ -27,7 +27,7 @@ enum { // token : 0-127 直接用該字母表達， 128 以後用代號。
   Import, As, If, While, For, 
   Else, In, Of, To, Step, 
   Await, New, Continue, Break, Return, 
-  Fn, Object, Class, Map,
+  Fn, Class, Map,
   KeyEnd,
   Op1Begin, Neg, Inc, Dec, Global, This, Op1End, 
   Op2Begin, Lor, Land, Eq, Neq, Le, Ge, Shl, Shr, Op2End,

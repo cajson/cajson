@@ -4,7 +4,7 @@ OBJS = cj
 
 all: $(OBJS)
 
-cj: src/cj.c src/gen_js.c src/gen_cj.c src/gen_c.c
+cj: src/cj.c src/gen_js.c src/gen_cj.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 run: $(OBJS)
